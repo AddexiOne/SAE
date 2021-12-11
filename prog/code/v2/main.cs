@@ -121,6 +121,37 @@ namespace main
                 }
                 presidents.Add(president);
             }
+
+            supprimeVide(presidents[0].listSpeeches[0].dico);
+        }
+
+        public static Dictionary<string, int> Copy(Dictionary<string, int> init){
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            foreach(KeyValuePair<string, int> kvp in init){
+                res.Add(kvp.Key, kvp.Value);
+            }
+            return res;
+        }
+
+        public static void supprimeVide(Dictionary<string, int> init){
+            string path = "../../static/hintsfiles/mot_vide.txt";
+            List<string> listWords = new List<string>();
+            Dictionary<string, int> res = Copy(init);
+            StreamReader sr = new StreamReader(path);
+            string line;
+            while((line=sr.ReadLine())!=null){
+                listWords.Add(line);
+            }
+
+            foreach(KeyValuePair<string, int> kvp in init){
+                foreach(string word in listWords){
+                    if(word == kvp.Key){
+                        System.Console.WriteLine("SAme");
+                        res.Remove(kvp.Key);
+                    }
+                    else System.Console.WriteLine("nope");
+                }
+            }
         }
 
 
