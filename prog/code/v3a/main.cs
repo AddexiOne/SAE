@@ -89,9 +89,8 @@ namespace main
                 return res;
             }
         }
-        
-        static void Main(string[] args)
-        {
+
+        public static List<President> Start(){
             /*
                 Liste de presidents : Pour chaque president connu dans listPresidents,
                 je créé un president, et je lui ajoute tout ses discours
@@ -119,6 +118,79 @@ namespace main
                 }
                 presidents.Add(president);
             }
+            return presidents;
+        } 
+        static void Main(string[] args)
+        {
+            List<President> presidents = Start();
+            foreach(KeyValuePair<string, int> kvp in racines(presidents[0].listSpeeches[0].dico)){
+                //System.Console.WriteLine("{0}:{1}", kvp.Key, kvp.Value);
+            }
+        }
+
+        public static Dictionary<string, int> racines(Dictionary<string, int> init){
+            string path = "../../static/hintsfiles/step1.txt";
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            bool test;
+            Dictionary<string, string> terminaison = new Dictionary<string, string>();
+            if(File.Exists(path)){
+                // Compare the size of the radical compared to the word we are looking at
+                //Open the connection to the file
+                StreamReader sr = new StreamReader(path);
+                string line;
+                string endOfWord;
+                string replacement;
+                while((line = sr.ReadLine())!= null){
+                    endOfWord = line.Split(' ')[1];
+                    replacement = line.Split(' ')[2];
+                    if(!terminaison.ContainsKey(endOfWord)){
+                        terminaison.Add(endOfWord, replacement);
+                    }
+                }
+                foreach(KeyValuePair<string, int> kvp in init){
+                    //Delete de s at the end of the word if there is one
+                    
+                    string winit = kvp.Key;
+                    if(winit.Length >0){
+                    if(winit[winit.Length-1]=='s'){
+                        winit = Reverse(Reverse(winit).Substring(1));
+                    }
+                    }
+                    foreach(KeyValuePair<string, string> kvpF in terminaison){
+                        string wout = kvpF.Key;
+                        //if winit is bigger thant wout
+                        if(winit.Length > wout.Length){
+                            System.Console.WriteLine($"{winit}\t{wout}");
+                            if(winit.Substring(winit.Length-wout.Length)==wout){
+                                if(kvpF.Value == "epsilon"){
+                                    string final = Reverse(Reverse(kvp.Key).Substring(wout.Length));
+                                    if(res.ContainsKey(final)){
+                                        res[final] += init[kvp.Key];
+                                    }
+                                    else{
+                                        res.Add(final, kvp.Value);
+                                    }
+                                    System.Console.WriteLine("final ajouté au res:");
+                                }
+
+                            }
+                        }
+                    }
+                }
+                
+            }
+            else System.Console.WriteLine("nope");
+            return res;
+        }
+
+        public static string Reverse(string s){
+            string res = "";
+            if(s.Length>0){
+            for(int i=s.Length-1; i>=0; i--){
+                res += s[i];
+            }
+            }
+            return res;
         }
         public static Dictionary<string, int> Copy(Dictionary<string, int> init){
             Dictionary<string, int> res = new Dictionary<string, int>();
