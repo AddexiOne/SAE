@@ -24,7 +24,7 @@ namespace main
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnary = PATHRESULT + president + "/" + annee + EXTENSIONCSV;
                 this.dico = GenerateDictionary(this.pathSpeech);
-                GenerateFile(this.dico, pathDictionnary);
+                GenerateFile(supprimeVide(this.dico), pathDictionnary);
             }
 
             public override string ToString()
@@ -40,7 +40,7 @@ namespace main
                 {
                     foreach (string mot in ligne.Split(' '))
                     {
-                        string motNormalise = Normalise(mot);
+                        string motNormalise = Normalise(mot).ToLower();
                         if (!dico.ContainsKey(motNormalise))
                         {
                             dico.Add(motNormalise, 1);
@@ -66,9 +66,7 @@ namespace main
                     }
                 }
                 File.WriteAllText(path, toBeWritten);
-                System.Console.WriteLine($"Fichier {path} écrit !");
             }
-
         }
         public struct President
         {
@@ -121,8 +119,6 @@ namespace main
                 }
                 presidents.Add(president);
             }
-
-            supprimeVide(presidents[0].listSpeeches[0].dico);
         }
 
         public static Dictionary<string, int> Copy(Dictionary<string, int> init){
@@ -133,7 +129,7 @@ namespace main
             return res;
         }
 
-        public static void supprimeVide(Dictionary<string, int> init){
+        public static Dictionary<string, int> supprimeVide(Dictionary<string, int> init){
             string path = "../../static/hintsfiles/mot_vide.txt";
             List<string> listWords = new List<string>();
             Dictionary<string, int> res = Copy(init);
@@ -143,15 +139,14 @@ namespace main
                 listWords.Add(line);
             }
 
-            foreach(KeyValuePair<string, int> kvp in init){
-                foreach(string word in listWords){
+            foreach(string word in listWords){
+                foreach(KeyValuePair<string, int> kvp in init){
                     if(word == kvp.Key){
-                        System.Console.WriteLine("SAme");
                         res.Remove(kvp.Key);
                     }
-                    else System.Console.WriteLine("nope");
                 }
             }
+            return res;
         }
 
 
