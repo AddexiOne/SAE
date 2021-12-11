@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace main
 {
@@ -24,7 +25,7 @@ namespace main
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnary = PATHRESULT + president + "/" + annee + EXTENSIONCSV;
                 this.dico = GenerateDictionary(this.pathSpeech);
-                GenerateFile(supprimeVide(this.dico), pathDictionnary);
+                GenerateFile(racines(supprimeVide(this.dico)), pathDictionnary);
             }
 
             public override string ToString()
@@ -123,9 +124,6 @@ namespace main
         static void Main(string[] args)
         {
             List<President> presidents = Start();
-            foreach(KeyValuePair<string, int> kvp in racines(presidents[0].listSpeeches[0].dico)){
-                //System.Console.WriteLine("{0}:{1}", kvp.Key, kvp.Value);
-            }
         }
 
         public static Dictionary<string, int> racines(Dictionary<string, int> init){
@@ -149,33 +147,44 @@ namespace main
                 }
                 foreach(KeyValuePair<string, int> kvp in init){
                     //Delete de s at the end of the word if there is one
-                    
+                    test = false; 
                     string winit = kvp.Key;
                     if(winit.Length >0){
-                    if(winit[winit.Length-1]=='s'){
-                        winit = Reverse(Reverse(winit).Substring(1));
+                        if(winit[winit.Length-1]=='s'){
+                            winit = Reverse(Reverse(winit).Substring(1));
+                        }
                     }
-                    }
-                    foreach(KeyValuePair<string, string> kvpF in terminaison){
+                    
+                    foreach(KeyValuePair<string, string> kvpF in terminaison.OrderBy(key => key.Key)){
                         string wout = kvpF.Key;
                         //if winit is bigger thant wout
                         if(winit.Length > wout.Length){
-                            System.Console.WriteLine($"{winit}\t{wout}");
                             if(winit.Substring(winit.Length-wout.Length)==wout){
+                                string final = Reverse(Reverse(kvp.Key).Substring(wout.Length));
                                 if(kvpF.Value == "epsilon"){
-                                    string final = Reverse(Reverse(kvp.Key).Substring(wout.Length));
                                     if(res.ContainsKey(final)){
                                         res[final] += init[kvp.Key];
                                     }
                                     else{
                                         res.Add(final, kvp.Value);
                                     }
-                                    System.Console.WriteLine("final ajouté au res:");
+                                    break;
+                                }
+                                else{
+                                    final += kvpF.Value;
+                                    if(res.ContainsKey(final)){
+                                        res[final] += init[kvp.Key];
+                                    }
+                                    else{
+                                        res.Add(final, kvp.Value);
+                                    }
+                                    break;
                                 }
 
                             }
                         }
                     }
+                    
                 }
                 
             }
