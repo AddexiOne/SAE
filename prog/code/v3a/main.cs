@@ -229,7 +229,7 @@ namespace main
         }
         public static string Normalise(string Xmot)
         {
-            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\"", "");
+            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "");
         }
     }
 }
