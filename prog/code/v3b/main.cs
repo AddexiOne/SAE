@@ -127,7 +127,7 @@ namespace main
             List<President> presidents = Start();
         }
 
-        public static Dictionary<string, int> racines(Dictionary<string, int> init){
+/*       public static Dictionary<string, int> racines(Dictionary<string, int> init){
             string path = "../../static/hintsfiles/step1.txt";
             Dictionary<string, int> res = new Dictionary<string, int>();
             bool test;
@@ -192,7 +192,61 @@ namespace main
             else System.Console.WriteLine("nope");
             return res;
         }
+*/
+        public static Dictionary<string, int> racines(Dictionary<string, int> init){
+            string path = "../../static/hintsfiles/step1.txt";
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            bool test;
+            Dictionary<string, string> terminaison = new Dictionary<string, string>();
+	    List<string> terL = new List<string>();
+            if(File.Exists(path)){
+                //Open the connection to the file
+                StreamReader sr = new StreamReader(path);
+                string line;
+                string endOfWord;
+                string replacement;
+                while((line = sr.ReadLine())!= null){
+                    endOfWord = line.Split(' ')[1];
+                    replacement = line.Split(' ')[2];
+		    terL.Add(endOfWord);
+                    if(!terminaison.ContainsKey(endOfWord)){
+                        terminaison.Add(endOfWord, replacement);
+                    }
+                }
+                   
+		//We read the dictionary init, and we delete the suffix if there is one
+		foreach(KeyValuePair<string, int> kvp in init){
+			bool test1 = false;
+			for(int i=0; i<terL.Count && !test1; i++){
+				if(kvp.Key.Length > terL[i].Length){
+					string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
+					if(termKey == terL[i]){
+						string res1 = "";
+						if(terminaison[terL[i]] == "epsilon"){
+							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+						}
+						else{
+							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+							res1 += terminaison[terL[i]];
+						}
+						if(res.ContainsKey(res1)){
+							res[res1] += kvp.Value;
+						}
+						else{
+							res.Add(res1, kvp.Value);
+							Console.WriteLine($"{res[res1]}, {res1}");
+						}
+						test1 = true;
 
+					}
+				}
+			}	
+		}
+                    
+            }
+            else System.Console.WriteLine("nope");
+	    return res;
+        }
         public static string Reverse(string s){
             string res = "";
             if(s.Length>0){
@@ -229,7 +283,7 @@ namespace main
             return res;
         }
 
-        public static string radical(string motInit){
+/*        public static string radical(string motInit){
             string res= "";
             int i=0;
             //tant que c'est une consonne
@@ -244,9 +298,9 @@ namespace main
                 }
             }
             else{
-                C= motInit[0];
+                C += motInit[0];
             }
-        }
+        }*/
 
         public static bool estVoyelle(char c){
             List<char> voyelles = new List<char>(){'a','e','i','o','u','y'};
@@ -280,9 +334,6 @@ namespace main
             return term;
         }
 
-	public static string radical(string init){
-	
-	}
         public static string Normalise(string Xmot)
         {
             return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "");
