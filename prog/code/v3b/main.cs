@@ -92,6 +92,15 @@ namespace main
             }
         }
 
+	public struct mot{
+		public string lisible {get; set;}
+		public string radical {get; set;}
+		public mot(string lisible, string radical){
+			this.lisible = lisible;
+			this.radical = radical;
+		}
+	}
+
         public static List<President> Start(){
             /*
                 Liste de presidents : Pour chaque president connu dans listPresidents,
@@ -122,140 +131,66 @@ namespace main
             }
             return presidents;
         } 
+
         static void Main(string[] args)
         {
             List<President> presidents = Start();
         }
 
-/*       public static Dictionary<string, int> racines(Dictionary<string, int> init){
-            string path = "../../static/hintsfiles/step1.txt";
-            Dictionary<string, int> res = new Dictionary<string, int>();
-            bool test;
-            Dictionary<string, string> terminaison = new Dictionary<string, string>();
-            if(File.Exists(path)){
-                // Compare the size of the radical compared to the word we are looking at
-                //Open the connection to the file
-                StreamReader sr = new StreamReader(path);
-                string line;
-                string endOfWord;
-                string replacement;
-                while((line = sr.ReadLine())!= null){
-                    endOfWord = line.Split(' ')[1];
-                    replacement = line.Split(' ')[2];
-                    if(!terminaison.ContainsKey(endOfWord)){
-                        terminaison.Add(endOfWord, replacement);
-                    }
-                }
-                foreach(KeyValuePair<string, int> kvp in init){
-                    //Delete de s at the end of the word if there is one
-                    test = false; 
-                    string winit = kvp.Key;
-                    if(winit.Length >0){
-                        if(winit[winit.Length-1]=='s'){
-                            winit = Reverse(Reverse(winit).Substring(1));
-                        }
-                    }
-                    
-                    foreach(KeyValuePair<string, string> kvpF in terminaison.OrderBy(key => key.Key)){
-                        string wout = kvpF.Key;
-                        //if winit is bigger thant wout
-                        if(winit.Length > wout.Length){
-                            if(winit.Substring(winit.Length-wout.Length)==wout){
-                                string final = Reverse(Reverse(kvp.Key).Substring(wout.Length));
-                                if(kvpF.Value == "epsilon"){
-                                    if(res.ContainsKey(final)){
-                                        res[final] += init[kvp.Key];
-                                    }
-                                    else{
-                                        res.Add(final, kvp.Value);
-                                    }
-                                    break; //Ncessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
-                                }
-                                else{
-                                    final += kvpF.Value;
-                                    if(res.ContainsKey(final)){
-                                        res[final] += init[kvp.Key];
-                                    }
-                                    else{
-                                        res.Add(final, kvp.Value);
-                                    }
-                                    break; //Necessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
-                                }
-
-                            }
-                        }
-                    }
-                    
-                }
-                
-            }
-            else System.Console.WriteLine("nope");
-            return res;
-        }
-*/
         public static Dictionary<string, int> racines(Dictionary<string, int> init){
-            string path = "../../static/hintsfiles/step1.txt";
-            Dictionary<string, int> res = new Dictionary<string, int>();
-            bool test;
-            Dictionary<string, string> terminaison = new Dictionary<string, string>();
-	    List<string> terL = new List<string>();
-            if(File.Exists(path)){
-                //Open the connection to the file
-                StreamReader sr = new StreamReader(path);
-                string line;
-                string endOfWord;
-                string replacement;
-                while((line = sr.ReadLine())!= null){
-                    endOfWord = line.Split(' ')[1];
-                    replacement = line.Split(' ')[2];
-		    terL.Add(endOfWord);
-                    if(!terminaison.ContainsKey(endOfWord)){
-                        terminaison.Add(endOfWord, replacement);
-                    }
-                }
-                   
-		//We read the dictionary init, and we delete the suffix if there is one
-		foreach(KeyValuePair<string, int> kvp in init){
-			bool test1 = false;
-			for(int i=0; i<terL.Count && !test1; i++){
-				if(kvp.Key.Length > terL[i].Length){
-					string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-					if(termKey == terL[i]){
-						string res1 = "";
-						if(terminaison[terL[i]] == "epsilon"){
-							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+	    Dictionary<string, int> res = new Dictionary<string, int>();
+		    string path = "../../static/hintsfiles/step1.txt";
+		    bool test;
+		    Dictionary<string, string> terminaison = new Dictionary<string, string>();
+		    List<string> terL = new List<string>();
+		    if(File.Exists(path)){
+			//Open the connection to the file
+			StreamReader sr = new StreamReader(path);
+			string line;
+			string endOfWord;
+			string replacement;
+			while((line = sr.ReadLine())!= null){
+			    endOfWord = line.Split(' ')[1];
+			    replacement = line.Split(' ')[2];
+			    terL.Add(endOfWord);
+			    if(!terminaison.ContainsKey(endOfWord)){
+				terminaison.Add(endOfWord, replacement);
+			    }
+			}
+			   
+			//We read the dictionary init, and we delete the suffix if there is one
+			foreach(KeyValuePair<string, int> kvp in init){
+				bool test1 = false;
+				for(int i=0; i<terL.Count && !test1; i++){
+					if(kvp.Key.Length > terL[i].Length){
+						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
+						if(termKey == terL[i]){
+							string res1 = "";
+							if(terminaison[terL[i]] == "epsilon"){
+								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+							}
+							else{
+								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+								res1 += terminaison[terL[i]];
+							}
+							if(res.ContainsKey(res1)){
+								res[res1] += kvp.Value;
+							}
+							else{
+								res.Add(res1, kvp.Value);
+								Console.WriteLine($"{res[res1]}, {res1}");
+							}
+							test1 = true;
 						}
-						else{
-							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-							res1 += terminaison[terL[i]];
-						}
-						if(res.ContainsKey(res1)){
-							res[res1] += kvp.Value;
-						}
-						else{
-							res.Add(res1, kvp.Value);
-							Console.WriteLine($"{res[res1]}, {res1}");
-						}
-						test1 = true;
-
 					}
-				}
-			}	
-		}
-                    
-            }
-            else System.Console.WriteLine("nope");
+				}	
+			}
+			sr.Close();
+		    }
+		    else System.Console.WriteLine("nope");
 	    return res;
         }
-        public static string Reverse(string s){
-            string res = "";
-            if(s.Length>0){
-            for(int i=s.Length-1; i>=0; i--){
-                res += s[i];
-            }
-            }
-            return res;
-        }
+
         public static Dictionary<string, int> Copy(Dictionary<string, int> init){
             Dictionary<string, int> res = new Dictionary<string, int>();
             foreach(KeyValuePair<string, int> kvp in init){
@@ -263,6 +198,7 @@ namespace main
             }
             return res;
         }
+
         public static Dictionary<string, int> supprimeVide(Dictionary<string, int> init){
             string path = "../../static/hintsfiles/mot_vide.txt";
             List<string> listWords = new List<string>();
@@ -283,25 +219,6 @@ namespace main
             return res;
         }
 
-/*        public static string radical(string motInit){
-            string res= "";
-            int i=0;
-            //tant que c'est une consonne
-            List<string> VCs = new List<string>();
-            string C ="";
-            if(estVoyelle(motInit[i])){
-                C += motInit[i];
-                string VC ="";
-                while(estVoyelle(motInit[i]) == false){
-                    VC += motInit[i];
-                    i++;
-                }
-            }
-            else{
-                C += motInit[0];
-            }
-        }*/
-
         public static bool estVoyelle(char c){
             List<char> voyelles = new List<char>(){'a','e','i','o','u','y'};
             bool test = false;
@@ -312,31 +229,10 @@ namespace main
             }
             return test;
         }
-        public static string Vide(string term){
-            bool test=false;
-            string path = "../../static/hintfiles/mot_vide.txt";
-            if(File.Exists(path)){
-                StreamReader sr = new StreamReader(path);
-                string line;
-                while((line=sr.ReadLine())!= null && test==false){
-                    string mot = line.Split(' ')[1];
-                    if(mot == term){
-                        if(line.Split(' ')[2]=="epsilon"){
-                            term = "";
-                        }
-                        else{
-                            term = line.Split(' ')[2];
-                        }
-                        test= true;
-                    }
-                }
-            }
-            return term;
-        }
 
         public static string Normalise(string Xmot)
         {
-            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "");
+            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "").Replace("ç","").ToLower();
         }
     }
 }

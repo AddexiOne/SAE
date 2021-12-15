@@ -15,7 +15,8 @@ class test{
 
 	static void radical(){
 		string mot = "magnifique";
-		string path = "../../static/hintsfiles/etape1.txt";
+		for(int num1=1; num1<=3; num1++){
+		string path = "../../static/hintsfiles/etape" +num+".txt";
 		if(File.Exists(path)){
 			Console.WriteLine($"{path} exists");
 			StreamReader sr = new StreamReader(path);
@@ -93,22 +94,17 @@ class test{
 			for(int i=0; i<terL.Count && !test1; i++){
 				if(kvp.Key.Length > terL[i].Length){
 					string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-					//Console.WriteLine($"{kvp.Key} => {termKey} {terL[i]}");
 					if(termKey == terL[i]){
 						string res1 = "";
 						if(terminaison[terL[i]] == "epsilon"){
 							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-					//		Console.WriteLine(res1);
 						}
 						else{
 							res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
 							res1 += terminaison[terL[i]];
-					//		Console.WriteLine(res1);
 						}
-						//Ajoute le resultat dans le dictionnaire resultat
 						if(res.ContainsKey(res1)){
 							res[res1] += kvp.Value;
-							//Console.WriteLine($"{res[res1]}, {res1}");
 						}
 						else{
 							res.Add(res1, kvp.Value);
@@ -121,12 +117,8 @@ class test{
 			}	
 		}
                     
-		foreach(KeyValuePair<string, int> kvp in res){
-			Console.WriteLine($"{kvp.Key} => {kvp.Value}");
-		}
-                
             }
             else System.Console.WriteLine("nope");
         }
-
+	return res;
 }
