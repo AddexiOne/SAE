@@ -57,6 +57,7 @@ class test{
 			Console.WriteLine($"{path} does not exists");
 		}
 	}
+	}
 	
 	public static bool estVoyelle(char c){
 		List<char> voy = new List<char>(){'a','e','i','o','u','y'};
@@ -64,6 +65,14 @@ class test{
 				if(v == c) return true;
 			}
 			return false;
+	}
+
+	public static Dicionary<string, int> Copy(Dictionary<string, int> init){
+		Dictionary<string, int> res = new Dictionary<string, int>();
+		foreach(KeyValuePair kvp in init){
+			res.Add(kvp.Key, kvp.Value);
+		}
+		return res;
 	}
 
 
@@ -119,6 +128,6 @@ class test{
                     
             }
             else System.Console.WriteLine("nope");
-        }
 	return res;
+        }
 }

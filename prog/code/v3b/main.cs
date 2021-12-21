@@ -25,7 +25,7 @@ namespace main
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnary = PATHRESULT + president + "/" + annee + EXTENSIONCSV;
                 this.dico = GenerateDictionary(this.pathSpeech);
-                GenerateFile(racines(supprimeVide(this.dico)), pathDictionnary);
+                GenerateFile(racines3(racines2(racines1(supprimeVide(this.dico), pathDictionnary);
             }
 
             public override string ToString()
@@ -137,10 +137,10 @@ namespace main
             List<President> presidents = Start();
         }
 
-        public static Dictionary<string, int> racines(Dictionary<string, int> init){
+
+        public static Dictionary<string, int> racines(Dictionary<string, int> init, int num){
 	    Dictionary<string, int> res = new Dictionary<string, int>();
-		    string path = "../../static/hintsfiles/step1.txt";
-		    bool test;
+	    string path = "../../static/hintsfiles/step"+num+".txt";
 		    Dictionary<string, string> terminaison = new Dictionary<string, string>();
 		    List<string> terL = new List<string>();
 		    if(File.Exists(path)){
@@ -179,6 +179,33 @@ namespace main
 							else{
 								res.Add(res1, kvp.Value);
 								Console.WriteLine($"{res[res1]}, {res1}");
+							}
+							test1 = true;
+						}
+					}
+				}	
+			}
+
+
+
+			foreach(KeyValuePair<string, int> kvp in res1){
+				bool test1 = false;
+				for(int i=0; i<terL.Count && !test1; i++){
+					if(kvp.Key.Length > terL[i].Length){
+						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
+						if(termKey == terL[i]){
+							string res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+							}
+							else{
+								res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
+								res2 += terminaison[terL[i]];
+							}
+							if(res.ContainsKey(res2)){
+								res1[res2] += kvp.Value;
+							}
+							else{
+								res2.Add(res2 kvp.Value);
+								Console.WriteLine($"{res[res2]}, {res2}");
 							}
 							test1 = true;
 						}
