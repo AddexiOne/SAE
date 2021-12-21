@@ -32,6 +32,7 @@ namespace main
             {
                 return this.pathSpeech.Split('/')[pathSpeech.Split('/').Length - 1];
             }
+
             public static Dictionary<string, int> GenerateDictionary(string path)
             {
                 StreamReader sr = new StreamReader(path);
@@ -168,7 +169,7 @@ namespace main
                                     else{
                                         res.Add(final, kvp.Value);
                                     }
-                                    break;
+                                    break; //Ncessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
                                 }
                                 else{
                                     final += kvpF.Value;
@@ -178,7 +179,7 @@ namespace main
                                     else{
                                         res.Add(final, kvp.Value);
                                     }
-                                    break;
+                                    break; //Necessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
                                 }
 
                             }
