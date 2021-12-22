@@ -25,7 +25,7 @@ namespace main
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnary = PATHRESULT + president + "/" + annee + EXTENSIONCSV;
                 this.dico = GenerateDictionary(this.pathSpeech);
-                GenerateFile(racines3(racines2(racines1(supprimeVide(this.dico), pathDictionnary);
+                GenerateFile(racines(supprimeVide(this.dico)), pathDictionnary);
             }
 
             public override string ToString()
@@ -92,15 +92,6 @@ namespace main
             }
         }
 
-	public struct mot{
-		public string lisible {get; set;}
-		public string radical {get; set;}
-		public mot(string lisible, string radical){
-			this.lisible = lisible;
-			this.radical = radical;
-		}
-	}
-
         public static List<President> Start(){
             /*
                 Liste de presidents : Pour chaque president connu dans listPresidents,
@@ -137,94 +128,84 @@ namespace main
             List<President> presidents = Start();
         }
 
-
-        public static Dictionary<string, int> racines(Dictionary<string, int> init, int num){
-	    Dictionary<string, int> res = new Dictionary<string, int>();
-	    string path = "../../static/hintsfiles/step"+num+".txt";
-		    Dictionary<string, string> terminaison = new Dictionary<string, string>();
-		    List<string> terL = new List<string>();
-		    if(File.Exists(path)){
-			//Open the connection to the file
-			StreamReader sr = new StreamReader(path);
-			string line;
-			string endOfWord;
-			string replacement;
-			while((line = sr.ReadLine())!= null){
-			    endOfWord = line.Split(' ')[1];
-			    replacement = line.Split(' ')[2];
-			    terL.Add(endOfWord);
-			    if(!terminaison.ContainsKey(endOfWord)){
-				terminaison.Add(endOfWord, replacement);
-			    }
-			}
-			   
-			//We read the dictionary init, and we delete the suffix if there is one
-			foreach(KeyValuePair<string, int> kvp in init){
-				bool test1 = false;
-				for(int i=0; i<terL.Count && !test1; i++){
-					if(kvp.Key.Length > terL[i].Length){
-						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-						if(termKey == terL[i]){
-							string res1 = "";
-							if(terminaison[terL[i]] == "epsilon"){
-								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-							}
-							else{
-								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-								res1 += terminaison[terL[i]];
-							}
-							if(res.ContainsKey(res1)){
-								res[res1] += kvp.Value;
-							}
-							else{
-								res.Add(res1, kvp.Value);
-								Console.WriteLine($"{res[res1]}, {res1}");
-							}
-							test1 = true;
-						}
-					}
-				}	
-			}
-
-
-
-			foreach(KeyValuePair<string, int> kvp in res1){
-				bool test1 = false;
-				for(int i=0; i<terL.Count && !test1; i++){
-					if(kvp.Key.Length > terL[i].Length){
-						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-						if(termKey == terL[i]){
-							string res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-							}
-							else{
-								res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-								res2 += terminaison[terL[i]];
-							}
-							if(res.ContainsKey(res2)){
-								res1[res2] += kvp.Value;
-							}
-							else{
-								res2.Add(res2 kvp.Value);
-								Console.WriteLine($"{res[res2]}, {res2}");
-							}
-							test1 = true;
-						}
-					}
-				}	
-			}
-			sr.Close();
-		    }
-		    else System.Console.WriteLine("nope");
-	    return res;
-        }
-
-        public static Dictionary<string, int> Copy(Dictionary<string, int> init){
-            Dictionary<string, int> res = new Dictionary<string, int>();
-            foreach(KeyValuePair<string, int> kvp in init){
-                res.Add(kvp.Key, kvp.Value);
+        public static Dictionary<string, int> racines(Dictionary<string,int> init){
+            Dictionary<string,int> res = Copy(init);
+            for(int i=1; i<=3; i++){
+                res = racines1(res, i);
             }
             return res;
         }
+
+        public static Dictionary<string, int> racines1(Dictionary<string, int> init, int nu)
+    {
+        Dictionary<string, int> init1 = Copy(init);
+        string path = "../../static/hintsfiles/step" + nu + ".txt";
+        Dictionary<string, int> res = new Dictionary<string, int>();
+        bool test;
+        res = Copy(init1);
+        if (File.Exists(path))
+        {
+            Dictionary<string, string> terminaison = new Dictionary<string, string>();
+            List<string> terL = new List<string>();
+            //Open the connection to the file
+            StreamReader sr = new StreamReader(path);
+            string line;
+            string endOfWord;
+            string replacement;
+            while ((line = sr.ReadLine()) != null)
+            {
+                endOfWord = line.Split(' ')[1];
+                replacement = line.Split(' ')[2];
+                terL.Add(endOfWord);
+                if (!terminaison.ContainsKey(endOfWord))
+                {
+                    terminaison.Add(endOfWord, replacement);
+                }
+            }
+
+            //We read the dictionary init1, and we delete the suffix if there is one
+            foreach (KeyValuePair<string, int> kvp in init1)
+            {
+                bool test1 = false;
+
+                for (int i = 0; i < terL.Count && !test1; i++)
+                {
+                    bool modif = false;
+                    if (kvp.Key.Length > terL[i].Length)
+                    {
+                        string termKey = kvp.Key.Substring(kvp.Key.Length - terL[i].Length);
+                        if (termKey == terL[i])
+                        {
+                            res.Remove(kvp.Key);
+                            string res1 = "";
+                            if (terminaison[terL[i]] == "epsilon")
+                            {
+                                res1 += kvp.Key.Substring(0, kvp.Key.Length - terL[i].Length);
+                            }
+                            else
+                            {
+                                res1 += kvp.Key.Substring(0, kvp.Key.Length - terL[i].Length);
+                                res1 += terminaison[terL[i]];
+                            }
+                            if (res.ContainsKey(res1))
+                            {
+                                res[res1] += kvp.Value;
+                            }
+                            else
+                            {
+                                res.Add(res1, kvp.Value);
+                                // Console.WriteLine($"{res[res1]}, {res1}");
+                            }
+                            test1 = true;
+                            modif = true;
+                        }
+
+                    }
+                }
+            }
+        }
+        return res;
+    }
 
         public static Dictionary<string, int> supprimeVide(Dictionary<string, int> init){
             string path = "../../static/hintsfiles/mot_vide.txt";
@@ -261,5 +242,15 @@ namespace main
         {
             return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "").Replace("ç","").ToLower();
         }
+
+         public static Dictionary<string, int> Copy(Dictionary<string, int> init1)
+    {
+        Dictionary<string, int> res = new Dictionary<string, int>();
+        foreach (KeyValuePair<string, int> kvp in init1)
+        {
+            res.Add(kvp.Key, kvp.Value);
+        }
+        return res;
+    }
     }
 }
