@@ -11,7 +11,6 @@ namespace main
         public const string PATHDISCOURS = "./../../static/";
         public const string EXTENSIONTXT = ".txt";
         public const string PATHRESULT = "./results/";
-
         public const string EXTENSIONCSV = ".csv";
         public struct Discour
         {
@@ -25,7 +24,7 @@ namespace main
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnary = PATHRESULT + president + "/" + annee + EXTENSIONCSV;
                 this.dico = GenerateDictionary(this.pathSpeech);
-                GenerateFile(racines3(racines2(racines1(supprimeVide(this.dico), pathDictionnary);
+                GenerateFile(racines(supprimeVide(this.dico)), pathDictionnary);
             }
 
             public override string ToString()
@@ -91,16 +90,16 @@ namespace main
                 return res;
             }
         }
-
-	public struct mot{
-		public string lisible {get; set;}
-		public string radical {get; set;}
-		public mot(string lisible, string radical){
-			this.lisible = lisible;
-			this.radical = radical;
-		}
-	}
-
+        public struct Terminaison{
+            public string suffixe {get;set;}
+            public string remplacement{get;set;}
+            public int regle {get;set;}
+            public Terminaison(int regle, string suff, string rempl){
+                this.regle = regle;
+                this.suffixe =suff;
+                this.remplacement = rempl;
+            }
+        }
         public static List<President> Start(){
             /*
                 Liste de presidents : Pour chaque president connu dans listPresidents,
@@ -131,101 +130,107 @@ namespace main
             }
             return presidents;
         } 
-
         static void Main(string[] args)
         {
             List<President> presidents = Start();
         }
-
-
-        public static Dictionary<string, int> racines(Dictionary<string, int> init, int num){
-	    Dictionary<string, int> res = new Dictionary<string, int>();
-	    string path = "../../static/hintsfiles/step"+num+".txt";
-		    Dictionary<string, string> terminaison = new Dictionary<string, string>();
-		    List<string> terL = new List<string>();
-		    if(File.Exists(path)){
-			//Open the connection to the file
-			StreamReader sr = new StreamReader(path);
-			string line;
-			string endOfWord;
-			string replacement;
-			while((line = sr.ReadLine())!= null){
-			    endOfWord = line.Split(' ')[1];
-			    replacement = line.Split(' ')[2];
-			    terL.Add(endOfWord);
-			    if(!terminaison.ContainsKey(endOfWord)){
-				terminaison.Add(endOfWord, replacement);
-			    }
-			}
-			   
-			//We read the dictionary init, and we delete the suffix if there is one
-			foreach(KeyValuePair<string, int> kvp in init){
-				bool test1 = false;
-				for(int i=0; i<terL.Count && !test1; i++){
-					if(kvp.Key.Length > terL[i].Length){
-						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-						if(termKey == terL[i]){
-							string res1 = "";
-							if(terminaison[terL[i]] == "epsilon"){
-								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-							}
-							else{
-								res1 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-								res1 += terminaison[terL[i]];
-							}
-							if(res.ContainsKey(res1)){
-								res[res1] += kvp.Value;
-							}
-							else{
-								res.Add(res1, kvp.Value);
-								Console.WriteLine($"{res[res1]}, {res1}");
-							}
-							test1 = true;
-						}
-					}
-				}	
-			}
-
-
-
-			foreach(KeyValuePair<string, int> kvp in res1){
-				bool test1 = false;
-				for(int i=0; i<terL.Count && !test1; i++){
-					if(kvp.Key.Length > terL[i].Length){
-						string termKey = kvp.Key.Substring(kvp.Key.Length-terL[i].Length);
-						if(termKey == terL[i]){
-							string res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-							}
-							else{
-								res2 += kvp.Key.Substring(0, kvp.Key.Length-terL[i].Length);
-								res2 += terminaison[terL[i]];
-							}
-							if(res.ContainsKey(res2)){
-								res1[res2] += kvp.Value;
-							}
-							else{
-								res2.Add(res2 kvp.Value);
-								Console.WriteLine($"{res[res2]}, {res2}");
-							}
-							test1 = true;
-						}
-					}
-				}	
-			}
-			sr.Close();
-		    }
-		    else System.Console.WriteLine("nope");
-	    return res;
-        }
-
-        public static Dictionary<string, int> Copy(Dictionary<string, int> init){
-            Dictionary<string, int> res = new Dictionary<string, int>();
-            foreach(KeyValuePair<string, int> kvp in init){
-                res.Add(kvp.Key, kvp.Value);
+        public static Dictionary<string, int> racines(Dictionary<string,int> init){
+            Dictionary<string,int> res = Copy(init);
+            for(int i=1; i<=3; i++){
+                res = racinesPath(res, i);
             }
             return res;
         }
-
+        public static List<Terminaison> generateListTerminaison(string path){
+            List<Terminaison> result = new List<Terminaison>();        
+            if(File.Exists(path)){
+                StreamReader sr = new StreamReader(path);
+                string line;
+                 /*
+                We read the whole file and we keep all the suffix in a List containing "struct<Terminsaison> t"
+                */
+                while ((line = sr.ReadLine()) != null)
+                {
+                    Terminaison t = new Terminaison(int.Parse(line.Split(' ')[0]),line.Split(' ')[1], line.Split(' ')[2]);
+                    result.Add(t);
+                }
+            }
+            return result;
+        }
+        public static Dictionary<string, int> racinesPath(Dictionary<string, int> init, int nu)
+        {
+            string path = "../../static/hintsfiles/step" + nu + ".txt";
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            res = Copy(init);
+            List<Terminaison> terminaisons = generateListTerminaison(path);
+         
+            //We read the dictionary init, and we delete the suffix if it matches with one contained in <terminaisons>
+            foreach (KeyValuePair<string, int> kvp in init)
+            {
+                bool wordModified = false;
+                // We browse the whole list containing the terminaison
+                // If the word has not been modified we keep browsing the List
+                for (int i = 0; i < terminaisons.Count && !wordModified; i++)
+                {
+                    // If the length of the current word is greater than the current terminaison's suffixe
+                    if (kvp.Key.Length > terminaisons[i].suffixe.Length)
+                    {
+                        // termKey = end of current Key word
+                        string termKey = kvp.Key.Substring(kvp.Key.Length - terminaisons[i].suffixe.Length);
+                        if (termKey == terminaisons[i].suffixe)
+                        {
+                            res.Remove(kvp.Key);
+                            // declaration of the string that'll contain the radical
+                            string radical = "";
+                            if (terminaisons[i].remplacement == "epsilon"){
+                                radical += kvp.Key.Substring(0, kvp.Key.Length - terminaisons[i].suffixe.Length);
+                            }
+                            else{
+                                radical += kvp.Key.Substring(0, kvp.Key.Length - terminaisons[i].suffixe.Length);
+                                radical += terminaisons[i].remplacement;
+                            }
+                            // Now we verify that the radical obtained is valid with its rule
+                            if(!isValidRadical(radical, terminaisons[i].regle)){
+                                // If the radical isnt verified we just add the word without any modification
+                                radical = kvp.Key;
+                                System.Console.WriteLine(radical);
+                            }
+                            // Now with the supposed right radical, we add it into the dictionary that contains every radical
+                            // If the word is already contained, we add the current radical's number of occurences to the dictionnary's number of occurences
+                            if (res.ContainsKey(radical)){
+                                res[radical] += kvp.Value;
+                            }
+                            // Else we add the radical to the dictionnary
+                            else{
+                                res.Add(radical, kvp.Value);
+                            }
+                            // We make sure we dont modify again the word with this boolean that tells the program not to everproceed in this for loop with this special word
+                            wordModified = true;
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+        public static bool isValidRadical(string radical, int rule){
+            List<string> VCs = new List<string>();
+            bool res = true;
+            bool voyellePres = false;
+            string suiteVC = "";
+            for(int i=0; i<radical.Length; i++){
+                if(estVoyelle(radical[i])){
+                    VCs.Add(suiteVC);
+                    suiteVC = radical[i] + "";
+                    voyellePres = true;
+                }
+                else{
+                    suiteVC += radical[i];
+                }
+            }
+            if(voyellePres) VCs.Add(suiteVC);
+            if(VCs.Count < rule) res = false;
+            return res;
+        }
         public static Dictionary<string, int> supprimeVide(Dictionary<string, int> init){
             string path = "../../static/hintsfiles/mot_vide.txt";
             List<string> listWords = new List<string>();
@@ -245,7 +250,6 @@ namespace main
             }
             return res;
         }
-
         public static bool estVoyelle(char c){
             List<char> voyelles = new List<char>(){'a','e','i','o','u','y'};
             bool test = false;
@@ -256,10 +260,18 @@ namespace main
             }
             return test;
         }
-
         public static string Normalise(string Xmot)
         {
             return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "").Replace("ç","").ToLower();
         }
+         public static Dictionary<string, int> Copy(Dictionary<string, int> init1)
+    {
+        Dictionary<string, int> res = new Dictionary<string, int>();
+        foreach (KeyValuePair<string, int> kvp in init1)
+        {
+            res.Add(kvp.Key, kvp.Value);
+        }
+        return res;
+    }
     }
 }
