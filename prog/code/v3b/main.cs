@@ -190,19 +190,19 @@ namespace main
                                 radical += terminaisons[i].remplacement;
                             }
                             // Now we verify that the radical obtained is valid with its rule
-                            if(!isValidRadical(radical, terminaisons[i].regle)){
-                                // If the radical isnt verified we just add the word without any modification
-                                radical = kvp.Key;
-                                System.Console.WriteLine(radical);
+                            if(isValidRadical(radical, terminaisons[i].regle)){
+                                // Now with the supposed right radical, we add it into the dictionary that contains every radical
+                                // If the word is already contained, we add the current radical's number of occurences to the dictionnary's number of occurences
+                                if (res.ContainsKey(radical)){
+                                    res[radical] += kvp.Value;
+                                }
+                                // Else we add the radical to the dictionnary
+                                else{
+                                    res.Add(radical, kvp.Value);
+                                }  
                             }
-                            // Now with the supposed right radical, we add it into the dictionary that contains every radical
-                            // If the word is already contained, we add the current radical's number of occurences to the dictionnary's number of occurences
-                            if (res.ContainsKey(radical)){
-                                res[radical] += kvp.Value;
-                            }
-                            // Else we add the radical to the dictionnary
                             else{
-                                res.Add(radical, kvp.Value);
+                                res.Remove(radical);
                             }
                             // We make sure we dont modify again the word with this boolean that tells the program not to everproceed in this for loop with this special word
                             wordModified = true;
@@ -227,7 +227,12 @@ namespace main
                     suiteVC += radical[i];
                 }
             }
-            if(voyellePres) VCs.Add(suiteVC);
+            if(voyellePres){
+                VCs.Add(suiteVC);    
+            }
+            else{
+                res = false;
+            }
             if(VCs.Count < rule) res = false;
             return res;
         }
