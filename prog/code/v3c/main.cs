@@ -261,9 +261,66 @@ namespace main
                     }
                 }
             }
+            return Sort(Finalise(res));
+        }
+        public static List<Mot> Finalise(List<Mot> init){
+            // We declare the result Dictionary at this state so we can keep an eye on what we are working on
+            Dictionary<string, Mot> tempD = new Dictionary<string, Mot>();
+            List<Mot> result = new List<Mot>();
+            // We have a list of <Mot> that does not handle duplicates. Indeed, the structure of the struct can't define and compare 2 similar cleaned word as their number of appearances and raw version isnt the same
+            // So now we create a dictionnary containing all words without duplicates by adding them to a Dictionary and giving them the right nimber of appearnces and so on
+            // So we now browe the List looking for new words and duplicates
+            foreach(Mot word in init){
+                // If the result contains the cleaned word, we add the occurences
+                if(tempD.ContainsKey(word.clean)){
+                    Mot temp = new Mot(word.raw, word.clean, word.nbOcc + tempD[word.clean].nbOcc);
+                    tempD[word.clean] = temp;
+                }
+                else{
+                    tempD.Add(word.clean, new Mot(word.raw, word.clean, word.nbOcc));
+                }
+            }
+            foreach(KeyValuePair<string, Mot> kvp in tempD){
+                result.Add(kvp.Value);
+            }
+            return result;
+        }
+
+        public static List<Mot> Sort(List<Mot> init){
+            List<Mot> alea_tri =new List<Mot>();
+            List<Mot> alea= new List<Mot>();
+            int i;
+
+            alea=Clone(init);
+            alea_tri.Add(alea[0]);
+            alea.RemoveAt(0);
+
+            while(alea.Count >0)
+            {
+                i=0;
+                while( (i<alea_tri.Count) && alea[0].nbOcc>alea_tri[i].nbOcc)
+                {
+                    i++;
+                }
+
+            alea_tri.Insert(i, alea[0]);
+            alea.RemoveAt(0);
+            }
+            List<Mot> res = new List<Mot>();
+            foreach(Mot m in alea_tri){
+                res.Insert(0, m);
+            }
             return res;
         }
 
+        public static List<Mot> Clone (List<Mot> init){
+            List<Mot> res = new List<Mot>();
+            foreach(Mot m in init)
+            {
+                res.Add(m);
+            }
+            return res;
+        }
         public static bool isValidRadical(string radical, int rule){
             List<string> VCs = new List<string>();
             bool res = true;
@@ -322,7 +379,7 @@ namespace main
         }
         public static string Normalise(string Xmot)
         {
-            return Xmot.Substring(Xmot.IndexOf('\'') < 0 ? 0 : Xmot.IndexOf('\'')).Replace(":","").Replace("?","").Replace("'","").Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("_", "").Replace("ç","").ToLower();
+            return Xmot.Substring(Xmot.IndexOf('\'') < 0 ? 0 : Xmot.IndexOf('\'')).Replace(":","").Replace("?","").Replace("'","").Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("_", "").Replace("ç","").Replace("«", "").Replace("»", "").ToLower();
         }
         public static List<Mot> Copy(List<Mot> init1)
         {
