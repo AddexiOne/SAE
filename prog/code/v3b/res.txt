@@ -1,6 +1,0 @@
-../../static/hintsfiles/etape1.txt exists
-ma
-gni
-fi
-qu
-e
