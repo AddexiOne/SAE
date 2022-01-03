@@ -1,9 +1,28 @@
 main{
     background-color: aliceblue;
-    width: 75%;
+    width: 90%;
     display: flex;
     flex-direction: row;
     padding: 0;
+    border-radius: 25px;
+}
+
+footer{
+    display: inline-flex;
+    background-color: rgb(228, 221, 221);
+    width: 100%;
+    margin: 2rem;
+    border-radius: 25px;
+    justify-content: space-evenly;
+}
+
+footer > *{
+    background-color: darkslategray;
+    margin: 1rem;
+    display: inline-flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 10px;
 }
 
 main>nav{
@@ -18,18 +37,20 @@ body{
     background-color: darkslategrey;
 }
 
-li>a{
+a{
     text-decoration: none;
     color: black;
 }
 
 li{
     list-style: none;
+    margin-top: 0.3rem;
 }
 ul{
     padding-left: 0;
 }
-.navigation{
+
+.nav-link{
     background-color: rgb(228, 221, 221);
     border-radius: 25px;
     margin: 1rem;
@@ -37,12 +58,15 @@ ul{
     padding-right: 1rem;
 }
 
-.results>ul>li{
-    list-style: "-";
-    margin-left: 20%;
+.nav-link > ul > .link{
+    margin-left: 2rem;
+    list-style: "- ";
 }
 
-
-.navigation > .results{
-    margin-left: 1rem;
+.display{
+    background: linear-gradient( rgb(204, 204, 204), rgb(193, 208, 240));
+    width: 100%;
+    border-radius: 25px;
+    margin: 1rem;
+    padding: 1rem;
 }

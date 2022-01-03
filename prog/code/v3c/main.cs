@@ -8,6 +8,7 @@ namespace main
 {
     public class project
     {
+        const string PATHRES = "../../../web/html/results/";
         public const string PATHDISCOURS = "./../../static/";
         public const string EXTENSIONTXT = ".txt";
         public const string PATHRESULT = "./results/";
@@ -170,7 +171,8 @@ namespace main
         } 
         static void Main(string[] args)
         {
-            List<President> presidents = Start();
+            // List<President> presidents = Start();
+            GenerateHTMLFiles();
         }
         public static List<Mot> racines(List<Mot> init){
             List<Mot> res = Copy(init);
@@ -389,6 +391,109 @@ namespace main
                 res.Add(new Mot(kvp.raw, kvp.clean, kvp.nbOcc));
             }
             return res;
+        }
+
+        public static void GenerateHTMLFiles(){
+            string[] fpath = Directory.GetDirectories("results/");
+		    foreach(string b in fpath){
+                string pathres = PATHRES + b.Split('/')[b.Split('/').Length-1];
+                // System.Console.WriteLine(pathres);
+                if(!Directory.Exists(pathres)){
+                    Directory.CreateDirectory(pathres);
+                    // System.Console.WriteLine("cree");
+                }
+                foreach(string d in Directory.GetDirectories(b)){
+                    //Directory CLEAN/RAW
+                    if(d.Split('/')[d.Split('/').Length-1]=="RAW"){
+                        foreach(string sd in Directory.GetFiles(d)){
+                            string file =pathres + '/' + (sd.Split('/')[sd.Split('/').Length-1]).Split('.')[0] + ".html";
+                            // System.Console.WriteLine("b:"+b);
+                            StreamReader sr = new StreamReader("../../../web/html/results/squelet.html");
+                            string resultatFinal = "";
+                            string line;
+                            while((line = sr.ReadLine()) != null){
+                                resultatFinal += line;
+                                string classe = "word-cloud";
+                                string linkTag = "nav-link";
+                                string infosD = "name-date";
+                                if(contient(line, linkTag)){
+                                    resultatFinal += writeLinks(PATHRES, fpath);
+                                }
+                                if(contient(line, classe)){
+                                    StreamReader srRes = new StreamReader(sd);
+                                    string l2;
+                                    for(int compt = 0; compt<=10; compt++){
+                                        l2 = srRes.ReadLine();
+                                        string motTBW = l2.Split(',')[0];
+                                        resultatFinal += "<div class=\"cloud\" id=\""+compt+"\">" + motTBW + "</div>\n"; 
+                                    }						
+                                }
+                                if(contient(line, infosD)){
+                                    resultatFinal += pathres.Split('/')[pathres.Split('/').Length-1] + ' ' + (sd.Split('/')[sd.Split('/').Length-1]).Split('.')[0]; 
+                                }
+                                resultatFinal += "\n";
+                                // if(classe == line.Substring(premierOcc(line, '\"'), classe.Length))
+                                // System.Console.WriteLine(line);
+                            }
+                            File.WriteAllText(file, resultatFinal);
+                        }
+                    }
+			    }
+            }
+        }
+        public static string writeLinks(string webFile, string[] files){
+            string res = "<h2>Navigation</h2>\n";
+            res += "<a href=\"../../index.html\">Acceuil</a>\n";
+
+            //Creation of the UL :
+            foreach(string president in files){
+                string pres = president.Split('/')[president.Split('/').Length-1];
+                res += "<ul class=\"president\">" + pres;
+                // System.Console.WriteLine(pres);
+                string[] fichier = Directory.GetFiles("results/"+pres + "/CLEAN");
+                if(fichier.Length > 2){
+                fichier = Trie(fichier);
+                for(int i=0; i<fichier.Length; i++){
+                    res += "<li class=\"link\"><a href=\"../" +pres+ "/" + (fichier[i].Split('/')[fichier[i].Split('/').Length-1]).Split('.')[0]  +".html\">"+(fichier[i].Split('/')[fichier[i].Split('/').Length-1]).Split('.')[0]+"</a></li>\n";
+                }
+                res+= "</ul>";
+                }
+            }
+            // System.Console.WriteLine(res);
+		    return res;
+	    }
+        public static bool contient(string line, string contained){
+            bool test = false;
+            for(int i=0; i<line.Length-(contained.Length-1) && !test; i++){
+                if(line.Substring(i, contained.Length) == contained) test = true;
+            }
+            return test;
+	    }
+
+        public static string[] Trie(string[] init){
+            System.Console.WriteLine("ok");
+            List<int> temp = new List<int>();
+            foreach(string s in init){
+                System.Console.WriteLine("2ok");
+                temp.Add(int.Parse(s.Split('/')[s.Split('/').Length-1].Split('.')[0]));
+                System.Console.WriteLine("3ok");
+            }
+            //Tri
+            int n = temp.Count-1;
+            for(int i=2; i<=n; i++){
+                int v = temp[i];
+                int j=i;
+                while(temp[j-1]>v){
+                    temp[j] = temp[j-1];
+                    j=j-1;
+                }
+                temp[j] = v;
+            }
+            foreach(int m in temp) System.Console.WriteLine(m);
+            for(int k=0; k<temp.Count; k++){
+                init[k] = temp[temp.Count-k] + ".html";
+            }
+            return init;
         }
     }
 }
