@@ -2,50 +2,70 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>SAE</title>
-    <link rel="stylesheet" href="../src/style.css">
+    <link rel="stylesheet" href="../src/css/normalise.css">
+    <title>Index</title>
 </head>
-    <body>
-        <header>
-            <h1>SAE-S1-PROG-COM-WEB</h1>
-            <img src="../src/img/90383548.jpg">
-        </header>
+<body>
+    <header>
+        <h1>SAE: Prog-Com-Web</h1>
+        <img src="/src/img/logo.jpeg" alt="logo.png">
+    </header>
 
-        <main>
-            <nav class="navigation">
-                <ul>
-                    <li><a href="index.html">Acceuil</a></li>
-                    <li><a href="tuto.html">Tutoriel</a></li>
-                    <li><a href="resultats.html">Resultats</a></li>
-                </ul>
-            </nav>
-
-            <article class="main">
-                <article class="presentation">
-                    <article class="sujet">
-                        <h2>Présentation du sujet:</h2>
-                        <p>Dans le cadre de la première année de BUT Informatique, nous avons du réaliser un projet mettant en relation les notions obtenues en :</p>
-                        <ul>
-                            <li><a href="communication.html">Communication</a></li>
-                            <li><a href="programmation.html">Programmation</a></li>
-                            <li><a href="web.html">Web</a></li>
-                        </ul>
-                        <p>Parmis les différents sujets proposés, j'ai choisi de traiter le sujet lié aux discours de nouvel an de chaque président de la 5ème République:</p>
-                        <article class="enonce">
-                            <p>Dire quels sont les thèmes majeurs, quelles sont les idées dominantes,
-                                dans les messages de vœux de Nouvel An adressés aux Français par
-                                les présidents de la République chaque année.
-                                A cette fin, on produira un nuage de mots pour l’ensemble. Mais,
-                                pour les étudiants volontaires, il est également possible d’introduire
-                                un paramètre de temps : un nuage de mots par période (découpage
-                                libre), ou un seul nuage de mots qui se modifie automatiquement pour
-                                refléter l’évolution temporelle.
-                            </p>
-                        </article>
+    <main>
+        <!--Page in 2 sections :
+            1 for the navigation
+            Another with text and other types-->
+            <section class="nav">
+                <h2>Navigation:</h2>
+                <!--The list is created by the C# program-->
+            </section>
+            <section class="display">
+                <article>
+                    <h1>Informations générales:</h1>
+                    <article class="project-desc">
+                        <h2>Enoncé du projet:</h2>
+                        <p>Dire quels sont les thèmes majeurs, quelles sont les idées dominantes,
+                            dans les messages de vœux de Nouvel An adressés aux Français par
+                            les présidents de la République chaque année.<br>
+                            A cette fin, on produira un nuage de mots pour l’ensemble.
+                        </p>
+                    </article>
+                    <article class="ressenti-sujet">
+                        <h2>Choix du projet:</h2>
+                        <p>J'ai choisi de prendre ce sujet car je trouve interressant de voir les différences, de discours, entre chaque 
+                            président que j'ai pu, ou non, connaître.
+                        </p>
+                        <p>
+                            Faire l'étude de ces discours, c'est aussi comprendre l'état d'esprit général du président, à l'arrivée de la nouvelle année, et donc du peuple par la même occasion.
+                        </p>
+                        <p>
+                            De plus, ce sujet est celui qui m'a personellement le plus parlé lors de la présentation des différents sujets.
+                        </p>
+                    </article>
+                    <article class="tuto">
+                        <h2>Tutoriel:</h2>
+                        <p>Pour consulter le résultat final de l'étude, je vous invite à cliquer sur les différents liens présents dans la barre de navigation, rangés par présidents et date.</p>
+                        <p>Pour consulter le code du projet, je vous invite à télecharger l'archive GitHub, que vous trouverez <a href="https://github.com/AddexiOne/SAE">ici</a></p>
                     </article>
                 </article>
-            </article>
-        </main>
+            </section>
+    </main>
 
-    </body>
+    <footer>
+        <section>
+            <h4>Auteur:</h4>
+            <p>Alexandre OFFERLE</p>
+        </section>
+        <section>
+            <h4>GitHub:</h4>
+            <p><a href="https://github.com/AddexiOne/SAE">https://github.com/AddexiOne/SAE</a></p>
+        </section>
+        <section>
+            <h4>Responsables:</h4>
+            <p>WESSLER-LAUX Eric</p>
+            <p>LEBORGNE Aurélie</p>
+            <p>TORREGROSSA Murielle</p>
+        </section>
+    </footer>
+</body>
 </html>
