@@ -161,7 +161,7 @@ namespace main
             System.Console.WriteLine("Traitement des textes");
             // Start();
             System.Console.WriteLine("Génération / Modification des fichiers HTML");
-            // GenerateHTMLFiles();
+            GenerateHTMLFiles();
             System.Console.WriteLine("modification du fichier CSS");
             Modify_CSS();
         }
@@ -505,7 +505,7 @@ namespace main
                                 }
                                 if (contient(line, infosD))
                                 {
-                                    resultatFinal += relativePathResultByPresident.Split('/')[relativePathResultByPresident.Split('/').Length - 1] + ' ' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0];
+                                    resultatFinal += " > " + relativePathResultByPresident.Split('/')[relativePathResultByPresident.Split('/').Length - 1] + ' ' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0] + ':';
                                 }
                                 }
                                 resultatFinal += "\n";
@@ -519,15 +519,14 @@ namespace main
             }
         }
         public static string writeLinks(string[] files)
-        {
-            string res = "<h2>Navigation</h2>\n";
-            res += "<a href=\"../../index.html\">Acceuil</a>\n";
+        {   string res ="";
+            res += "<a href=\"../../index.html\" class=\"index\"><h2>Acceuil</h2></a>\n";
 
             //Creation of the UL :
             foreach (string president in files)
             {
                 string pres = president.Split('/')[president.Split('/').Length - 1];
-                res += "<ul class=\"president\">" + pres;
+                res += "<ul class=\"president\"><h2>-" + pres + "</h2>";
                 // System.Console.WriteLine(pres);
                 string[] fichier = Directory.GetFiles("results/" + pres + "/CLEAN");
 
@@ -599,8 +598,7 @@ namespace main
                 int randomized = listeRemaining[i%randomPicker];
                 listeRemaining.Remove(randomized);
                 res += HEADER + randomized + ENDHEADER;
-                res += "\twidth:" + rnd.Next(10,25) + "%;";
-                res += "\n\tfont-size:" + rnd.Next(100, 200) + "%;";
+                res += "\n\twidth:" + rnd.Next(17, 33) + "%;";
                 res += "\n\tbackground-color: rgb(102," + rnd.Next(0,256) + ",102);";
                 res += "\n\tcolor: black;" + FOOTER;
             }
