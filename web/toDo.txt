@@ -1,4 +1,0 @@
-1/ Faire le squelette de la page de base du site
-2/ Faire le corps de la page resultats
-3/ Faire Algo pour remplir les pages avec les fichiers et leurs noms respectifs
-4/ Faire algo pour remplir les pages resultats (C#)
