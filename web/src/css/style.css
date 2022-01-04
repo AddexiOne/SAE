@@ -155,6 +155,7 @@ ul{
     height: 65%;
     border-radius: 15px;
     background-color: aliceblue;
+    margin: auto;
 }
 
 .word-cloud > * {
