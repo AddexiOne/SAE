@@ -38,8 +38,8 @@ Le dossier **static** se trouve les fichiers utiles et importants aux projet, ce
 > Je recommande fortement de ne pas toucher a ces fichiers car cela pourrait impacter le bon fonctionnement du programme.
 Dans le dossier **code** se trouve plusieurs fichiers dans lesquels se trouvent :
 ```
-    - :page_with_curl: main.cs
-    - :signal_strength: main.exe
+    - 📘 main.cs
+    - ✅ main.exe
 ```
 Le fichier **main.cs** est le fichier source, c'est dans celui-ci que se trouve le code *C#* de chaque version.
 Le fichier **main.exe** est le fichier d'execution du code source.
@@ -55,8 +55,8 @@ Le dossier **results** contient lui-même des dossiers qui, eux, contiennent les
 Le dossier **html** contient toutes les pages générés, ou non, par le programme *C#*.
 Le dossier **src** contient deux dossiers :
 ```
-    - :blue-book: css
-    - :white_flower: img
+    - 📘 css
+    - 📘 img
 ```
 Le dossier **css** contient les différents fichiers *css* nécessaires à l'affichage du resultat dans les pages *html*.
 Le dossier **img** contient les différentes images présentes dans les différentes pages *html*.
