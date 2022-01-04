@@ -88,7 +88,7 @@ ul{
     flex-shrink: 0;
     width: 20%;
 }
-.index > h2, .nav-link h2{
+.index  h2, .nav-link h2,h3{
     font-size: 1rem;
     margin: 1;
     text-decoration: underline solid darkslategray;
@@ -108,9 +108,16 @@ ul{
 }
 
 
-.display  h1, .display h3{
+.index  h2, .display h3{
     margin-top: 0.5rem;
-    font-size: xx-large;
+    font-size: x-large;
+    font-weight: bold;
+    text-decoration: underline solid black;
+}
+
+.display h2{
+    margin-top: 0.5rem;
+    font-size: 300%;
     font-weight: bold;
     text-decoration: underline solid black;
 }
@@ -139,26 +146,25 @@ ul{
 */
 
 .word-cloud{
+    flex-grow: 1;
     display: flex;
-    flex-wrap: wrap;
-    justify-content:space-evenly;
+    flex-flow: wrap;
+    justify-content: center;
+    align-items: stretch;
     width: 90%;
-    margin: auto;
+    height: 65%;
     border-radius: 15px;
+    background-color: aliceblue;
 }
 
 .word-cloud > * {
     display: flex;
-    margin: 0.3rem;
-    padding: 3%;    
+    flex-direction: column;
+    padding-top: 1rem;
     justify-content: center;
-    border-radius: 15px;
-    transition: transform .2s;
+    font-weight: bold;
 }
 .cloud{
-    font-size: large;
-}
-
-.word-cloud > :hover{
-    transform: scale(1.25);
+    margin: 1rem;
+    font-size: 220%;
 }
