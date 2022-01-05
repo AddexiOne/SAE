@@ -12,22 +12,27 @@ namespace main
         public const string EXTENSIONTXT = ".txt";
         public const string relativePathResultByPresidentULT = "./results/";
         public const string EXTENSIONCSV = ".csv";
+        Random rnd = new Random();
+
         public struct Discour
         {
             public string pathSpeech { get; }
             public string pathDictionnaryRaw { get; }
             public string pathDictionnaryClean { get; }
-            public List<Mot> dico { get; set; }
+            public string pathHtmlFile {get; set;}
+            public List<Mot> listMot { get; set; }
             public int annee { get; }
+            public string HtmlContent {get; set;}
             public Discour(string president, int annee)
             {
                 this.annee = annee;
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnaryRaw = relativePathResultByPresidentULT + president + "/" + "RAW" + "/" + annee + EXTENSIONCSV;
                 this.pathDictionnaryClean = relativePathResultByPresidentULT + president + "/" + "CLEAN" + "/" + annee + EXTENSIONCSV;
-                this.dico = GenerateList(this.pathSpeech);
-                GenerateFileR(racines(supprimeVide(this.dico)), this.pathDictionnaryRaw);
-                GenerateFileC(racines(supprimeVide(this.dico)), this.pathDictionnaryClean);
+                this.listMot = GenerateList(this.pathSpeech);
+                GenerateFileR(racines(supprimeVide(this.listMot)), this.pathDictionnaryRaw);
+                GenerateFileC(racines(supprimeVide(this.listMot)), this.pathDictionnaryClean);
+                this.HtmlContent = "";
             }
             public static List<Mot> GenerateList(string path)
             {
@@ -90,10 +95,14 @@ namespace main
         {
             public string namePresident;
             public List<Discour> listSpeeches;
+            public string pathResultsDirectory {get; set;}
             public President(string nom)
             {
                 this.namePresident = nom;
                 this.listSpeeches = new List<Discour>();
+                this.pathResultsDirectory = "../../../web/html/results" + Directory.GetDirectoryRoot("results/..") + "/" + this.namePresident + '/';
+                Directory.CreateDirectory("../../../web/html/results"+ Directory.GetDirectoryRoot("results/.."));
+                Directory.CreateDirectory(this.pathResultsDirectory);
             }
         }
         public struct Terminaison
@@ -149,6 +158,7 @@ namespace main
                             Directory.CreateDirectory(relativePathResultByPresidentULT + s + "/CLEAN");
                         }
                         Discour d = new Discour(s, annee);
+                        d.pathHtmlFile = president.pathResultsDirectory + d.annee + ".html";
                         president.listSpeeches.Add(d);
                     }
                     annee++;
@@ -438,10 +448,6 @@ namespace main
             if ((int)c >= (int)'a' && (int)c <= (int)'z') res = true;
             return res;
         }
-        public static string Replace(char c)
-        {
-            return "";
-        }
         public static List<Mot> Copy(List<Mot> init1)
         {
             List<Mot> res = new List<Mot>();
@@ -451,90 +457,173 @@ namespace main
             }
             return res;
         }
-        public static void GenerateHTMLFiles()
-        {
-            Random rnd = new Random();
-            string[] tabResultsHTML = Directory.GetDirectories("results/");
-            foreach (string fileResultHTML in tabResultsHTML)
-            {
-                string relativePathResultByPresident = PATHRES + fileResultHTML.Split('/')[fileResultHTML.Split('/').Length - 1];
-                if (!Directory.Exists(relativePathResultByPresident))
-                {
-                    Directory.CreateDirectory(relativePathResultByPresident);
-                    // System.Console.WriteLine("cree");
-                }
-                foreach (string tabPresidentsHTML in Directory.GetDirectories(fileResultHTML))
-                {
-                    //Directory CLEAN/RAW
-                    if (tabPresidentsHTML.Split('/')[tabPresidentsHTML.Split('/').Length - 1] == "RAW")
-                    {
-                        foreach (string fileResultByP in Directory.GetFiles(tabPresidentsHTML))
-                        {
-                            string file = relativePathResultByPresident + '/' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0] + ".html";
-                            StreamReader sr = new StreamReader("../../../web/html/results/squelet.html");
-                            string resultatFinal = "";
-                            string line;
-                            while ((line = sr.ReadLine()) != null)
-                            {
-                                resultatFinal += line;
-                                string classe = "word-cloud";
-                                string linkTag = "nav-link";
-                                string infosD = "name-date";
-                                if(line.Length > 0){
-                                if(contient(line, linkTag))
-                                {
-                                    resultatFinal += writeLinks(tabResultsHTML);
-                                }
-                                if(contient(line, classe))
-                                {
-                                    StreamReader srRes = new StreamReader(fileResultByP);
-                                    string l2;
-                                    List<string> listShuffled = new List<string>();
-                                    for (int compt = 0; compt <= 15; compt++)
-                                    {
-                                        l2 = srRes.ReadLine();
-                                        listShuffled.Add(l2.Split(',')[0]);
-                                    }
-                                    for(int m = 15; m>=0; m--){
-                                        int randomPicker = rnd.Next(1,16);
-                                        string motTBW = listShuffled[m%randomPicker];
-                                        listShuffled.RemoveAt(m%randomPicker);
-                                        resultatFinal += "\n\t\t\t\t\t<div class=\"cloud\" id=\"" + (16-m) + "\">" + motTBW + "</div>";
-                                    }
-                                }
-                                if (contient(line, infosD))
-                                {
-                                    resultatFinal += "\n\t\t\t\t\t> " + relativePathResultByPresident.Split('/')[relativePathResultByPresident.Split('/').Length - 1] + ' ' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0] + ':';
-                                }
-                                }
-                                resultatFinal += "\n";
-                                // if(classe == line.Substring(premierOcc(line, '\"'), classe.Length))
-                                // System.Console.WriteLine(line);
-                            }
-                            File.WriteAllText(file, resultatFinal);
-                        }
-                    }
+
+        /*
+            This method take the created list of <President> and foreach of it's discours, create its HTML result File with the skeleton
+        */
+        public static void GenerateHTMLFiles(List<President> init){
+            // I have to browse the List of <President> and browse their List of <Discour>
+            foreach(President presidents in init){
+                foreach(Discour discours in presidents.listSpeeches){
+                    // So, for each discours (which contains its result file's path) we just create the file.
+                    File.Create(discours.pathHtmlFile);
                 }
             }
         }
-        public static string writeLinks(string[] files)
-        {   string res ="";
-            res += "<a href=\"../../index.html\" class=\"index\"><h2>Acceuil</h2></a>\n";
 
-            //Creation of the UL :
-            foreach (string president in files)
-            {
-                string pres = president.Split('/')[president.Split('/').Length - 1];
-                res += "\t\t\t\t<h3>-"+ pres + "</h3>\n\t\t\t\t<ul class=\"president\">\n";
-                // System.Console.WriteLine(pres);
-                string[] fichier = Directory.GetFiles("results/" + pres + "/CLEAN");
-
-                fichier = Trie(fichier);
-                for (int i = 0; i < fichier.Length; i++)
-                {
-                    res += "\t\t\t\t\t<li class=\"link\"><a href=\"../" + pres + "/" + (fichier[i].Split('/')[fichier[i].Split('/').Length - 1]).Split('.')[0] + ".html\">" + (fichier[i].Split('/')[fichier[i].Split('/').Length - 1]).Split('.')[0] + "</a></li>\n";
+        /*
+            This method read a skeleton HTML file that has been created and filled manually.
+            While reading the skeleton file, we check if the current line contains the triggering classes, 
+            If yes, we then browse all <President> and their <Discour> to add the read lines, and then we add generated html, wheter its the links or the word Cloud
+            At the end, we then complete the HTML file by adding the rest of the skeleton lines.
+        */
+        public static void FillHtmlFile(List<President> init){
+            const string PATHSKELETON = "../../../web/html/results/skeleton.html";
+            StreamReader sr = new StreamReader(PATHSKELETON);
+            // We read the skeleton file waiting for the triggering classes
+            string line;
+            string coreHtml = "";
+            while((line = sr.ReadLine()) != null){
+                coreHtml += line;
+                if(contient(ligne, "nav-link")){
+                    foreach(President presidents in init){
+                        foreach(Discour discours in presidents.listSpeeches){
+                            discours.HtmlContent += coreHtml;
+                            discours.HtmlContent += writeLinks(init);
+                        }
+                    }
+                    coreHtml = "";
                 }
-                res += "\t\t\t\t</ul>\n";
+                if(contient(ligne, "display")){
+                   foreach(President presidents in init){
+                        foreach(Discour discours in presidents.listSpeeches){
+                            discours.HtmlContent += coreHtml;
+                            discours.HtmlContent += writeWordCloud(discours.listMot);
+                        }
+                    }
+                    coreHtml = "";
+                }
+                if(contient(ligne, "name-date")){
+                    foreach(President presidents in init){
+                        foreach(Discour discours in presidents.listSpeeches){
+                            discours.HtmlContent += coreHtml;
+                            discours.HtmlContent += writeNameDate(discours);
+                        }
+                    }
+                    coreHtml = "";
+                }
+            }
+            foreach(President presidents in init){
+                foreach(Discour discours in presidents.listSpeeches){
+                    discours.HtmlContent += coreHtml;
+                    File.WriteAllText(discours.pathHtmlFile, discours.HtmlContent);
+                }
+            }
+        }
+
+        // public static void GenerateHTMLFiles()
+        // {
+        //     string[] tabResultsHTML = Directory.GetDirectories("results/");
+        //     foreach (string fileResultHTML in tabResultsHTML)
+        //     {
+        //         string relativePathResultByPresident = PATHRES + fileResultHTML.Split('/')[fileResultHTML.Split('/').Length - 1];
+        //         if (!Directory.Exists(relativePathResultByPresident))
+        //         {
+        //             Directory.CreateDirectory(relativePathResultByPresident);
+        //             // System.Console.WriteLine("cree");
+        //         }
+        //         foreach (string tabPresidentsHTML in Directory.GetDirectories(fileResultHTML))
+        //         {
+        //             //Directory CLEAN/RAW
+        //             if (tabPresidentsHTML.Split('/')[tabPresidentsHTML.Split('/').Length - 1] == "RAW")
+        //             {
+        //                 foreach (string fileResultByP in Directory.GetFiles(tabPresidentsHTML))
+        //                 {
+        //                     string file = relativePathResultByPresident + '/' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0] + ".html";
+        //                     StreamReader sr = new StreamReader("../../../web/html/results/squelet.html");
+        //                     string resultatFinal = "";
+        //                     string line;
+        //                     while ((line = sr.ReadLine()) != null)
+        //                     {
+        //                         resultatFinal += line;
+        //                         string classe = "word-cloud";
+        //                         string linkTag = "nav-link";
+        //                         string infosD = "name-date";
+        //                         if(line.Length > 0){
+        //                         if(contient(line, linkTag))
+        //                         {
+        //                             resultatFinal += writeLinks(tabResultsHTML);
+        //                         }
+        //                         if(contient(line, classe))
+        //                         {
+        //                             StreamReader srRes = new StreamReader(fileResultByP);
+        //                             string l2;
+        //                             List<string> listShuffled = new List<string>();
+        //                             for (int compt = 0; compt <= 15; compt++)
+        //                             {
+        //                                 l2 = srRes.ReadLine();
+        //                                 listShuffled.Add(l2.Split(',')[0]);
+        //                             }
+        //                             for(int m = 15; m>=0; m--){
+        //                                 int randomPicker = rnd.Next(1,16);
+        //                                 string motTBW = listShuffled[m%randomPicker];
+        //                                 listShuffled.RemoveAt(m%randomPicker);
+        //                                 resultatFinal += "\n\t\t\t\t\t<div class=\"cloud\" id=\"" + (16-m) + "\">" + motTBW + "</div>";
+        //                             }
+        //                         }
+        //                         if (contient(line, infosD))
+        //                         {
+        //                             resultatFinal += "\n\t\t\t\t\t> " + relativePathResultByPresident.Split('/')[relativePathResultByPresident.Split('/').Length - 1] + ' ' + (fileResultByP.Split('/')[fileResultByP.Split('/').Length - 1]).Split('.')[0] + ':';
+        //                         }
+        //                         }
+        //                         resultatFinal += "\n";
+        //                         // if(classe == line.Substring(premierOcc(line, '\"'), classe.Length))
+        //                         // System.Console.WriteLine(line);
+        //                     }
+        //                     File.WriteAllText(file, resultatFinal);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        /*
+            This fonction uses a List of <President> that contains the List of <Discour> and for each <Discour> we get its HTML result file's path.
+            Foreach President and each discours, we then add the path to the file (relative to the index.html file) inside their right tag.
+            Each line is put into a string that will be returned.
+        */
+        public static string writeLinks(List<President> init)
+        {   
+            const string ACCEUIL = "<a href=\"../../index.html\" class=\"index\"><h2>Acceuil</h2></a>";
+            const string TABLI = "\n\t\t\t\t\t";
+            const string TABUL = "\n\t\t\t\t";
+            const string TABH3 = TABUL;
+
+            string res = ACCEUIL;
+            // Browe the list of <President>
+            foreach (President president in init)
+            {
+                // We now write The president's name and create its ul list (that we will fill later)
+                res += TABH3 + "<h3>-"+ president.namePresident + "</h3>";
+                res += TABUL + "<ul class=\"president\">";
+                // Browse every President's <Discour>
+                foreach(Discour discours in president.listSpeeches){
+                    // Add the link to the discours inside the returned string variable
+                    res += TABLI + "<li class=\"link\"><a href=\"" + discours.pathHtmlFile + "\">" + discours.annee + "</a></li>";
+                }
+                // End of the president's discours so we close its list (ul)
+                res += TABUL + "</ul>";
+                // string pres = president.namePresident;
+                // res += "\t\t\t\t<h3>-"+ pres + "</h3>\n\t\t\t\t<ul class=\"president\">\n";
+                // // System.Console.WriteLine(pres);
+                // string[] fichier = Directory.GetFiles("results/" + pres + "/CLEAN");
+
+                // fichier = Trie(fichier);
+                // for (int i = 0; i < fichier.Length; i++)
+                // {
+                //     res += "\t\t\t\t\t<li class=\"link\"><a href=\"../" + pres + "/" + (fichier[i].Split('/')[fichier[i].Split('/').Length - 1]).Split('.')[0] + ".html\">" + (fichier[i].Split('/')[fichier[i].Split('/').Length - 1]).Split('.')[0] + "</a></li>\n";
+                // }
+                // res += "\t\t\t\t</ul>\n";
 
             }
             // System.Console.WriteLine(res);
@@ -543,42 +632,12 @@ namespace main
         public static bool contient(string line, string contained)
         {
             bool test = false;
-            for (int i = 0; i < line.Length - (contained.Length - 1) && !test; i++)
-            {
-                if (line.Substring(i, contained.Length) == contained) test = true;
+            if(line.Length >0){
+                for (int i = 0; i < line.Length - (contained.Length - 1) && !test; i++){
+                    if (line.Substring(i, contained.Length) == contained) test = true;
+                }
             }
             return test;
-        }
-        public static string[] Trie(string[] init)
-        {
-            List<int> temp = new List<int>();
-            foreach (string s in init)
-            {
-                temp.Add(int.Parse(s.Split('/')[s.Split('/').Length - 1].Split('.')[0]));
-            }
-            //Tri
-            List<int> res = new List<int>();
-            int i;
-
-            res.Add(temp[0]);
-            temp.RemoveAt(0);
-
-            while (temp.Count > 0)
-            {
-                i = 0;
-                while ((i < res.Count) && temp[0] > res[i])
-                {
-                    i++;
-                }
-
-                res.Insert(i, temp[0]);
-                temp.RemoveAt(0);
-            }
-            for (int k = 0; k < temp.Count; k++)
-            {
-                init[k] = temp[temp.Count - k] + ".html";
-            }
-            return init;
         }
         public static void Modify_CSS(){
             const string PATHCSSFILE = "../../../web/src/css/word_cloud.css";

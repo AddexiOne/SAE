@@ -121,85 +121,105 @@ namespace main
                 presidents.Add(president);
             }
             return presidents;
-        } 
+        }
+        public struct Terminaison{
+            public string suffixe {get;set;}
+            public string remplacement{get;set;}
+            public int regle {get;set;}
+            public Terminaison(int regle, string suff, string rempl){
+                this.regle = regle;
+                this.suffixe =suff;
+                this.remplacement = rempl;
+            }
+        }
         static void Main(string[] args)
         {
             List<President> presidents = Start();
         }
-
-        public static Dictionary<string, int> racines(Dictionary<string, int> init){
-            string path = "../../static/hintsfiles/step1.txt";
-            Dictionary<string, int> res = new Dictionary<string, int>();
-            bool test;
-            Dictionary<string, string> terminaison = new Dictionary<string, string>();
+        public static List<Terminaison> generateListTerminaison(string path){
+            List<Terminaison> result = new List<Terminaison>();        
             if(File.Exists(path)){
-                // Compare the size of the radical compared to the word we are looking at
-                //Open the connection to the file
                 StreamReader sr = new StreamReader(path);
                 string line;
-                string endOfWord;
-                string replacement;
-                while((line = sr.ReadLine())!= null){
-                    endOfWord = line.Split(' ')[1];
-                    replacement = line.Split(' ')[2];
-                    if(!terminaison.ContainsKey(endOfWord)){
-                        terminaison.Add(endOfWord, replacement);
-                    }
+                 /*
+                We read the whole file and we keep all the suffix in a List containing "struct<Terminsaison> t"
+                */
+                while ((line = sr.ReadLine()) != null)
+                {
+                    Terminaison t = new Terminaison(int.Parse(line.Split(' ')[0]),line.Split(' ')[1], line.Split(' ')[2]);
+                    result.Add(t);
                 }
-                foreach(KeyValuePair<string, int> kvp in init){
-                    //Delete de s at the end of the word if there is one
-                    test = false; 
-                    string winit = kvp.Key;
-                    if(winit.Length >0){
-                        if(winit[winit.Length-1]=='s'){
-                            winit = Reverse(Reverse(winit).Substring(1));
-                        }
-                    }
-                    
-                    foreach(KeyValuePair<string, string> kvpF in terminaison.OrderBy(key => key.Key)){
-                        string wout = kvpF.Key;
-                        //if winit is bigger thant wout
-                        if(winit.Length > wout.Length){
-                            if(winit.Substring(winit.Length-wout.Length)==wout){
-                                string final = Reverse(Reverse(kvp.Key).Substring(wout.Length));
-                                if(kvpF.Value == "epsilon"){
-                                    if(res.ContainsKey(final)){
-                                        res[final] += init[kvp.Key];
-                                    }
-                                    else{
-                                        res.Add(final, kvp.Value);
-                                    }
-                                    break; //Ncessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
-                                }
-                                else{
-                                    final += kvpF.Value;
-                                    if(res.ContainsKey(final)){
-                                        res[final] += init[kvp.Key];
-                                    }
-                                    else{
-                                        res.Add(final, kvp.Value);
-                                    }
-                                    break; //Necessaire pour quitter la boucle et ne pas rajouter plusieures fois le mot
-                                }
-
-                            }
-                        }
-                    }
-                    
-                }
-                
             }
-            else System.Console.WriteLine("nope");
+            return result;
+        }
+        public static Dictionary<string, int> racines(Dictionary<string,int> init){
+            Dictionary<string,int> res = Copy(init);
+            for(int i=1; i<=3; i++){
+                res = racinesPath(res, i);
+            }
             return res;
         }
-
-        public static string Reverse(string s){
-            string res = "";
-            if(s.Length>0){
-            for(int i=s.Length-1; i>=0; i--){
-                res += s[i];
+        public static Dictionary<string, int> racinesPath(Dictionary<string, int> init, int nu)
+        {
+            string path = "../../static/hintsfiles/step" + nu + ".txt";
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            res = Copy(init);
+            List<Terminaison> terminaisons = generateListTerminaison(path);
+         
+            //We read the dictionary init, and we delete the suffix if it matches with one contained in <terminaisons>
+            foreach (KeyValuePair<string, int> kvp in init)
+            {
+                bool wordModified = false;
+                // We browse the whole list containing the terminaison
+                // If the word has not been modified we keep browsing the List
+                for (int i = 0; i < terminaisons.Count && !wordModified; i++)
+                {
+                    // If the length of the current word is greater than the current terminaison's suffixe
+                    if (kvp.Key.Length > terminaisons[i].suffixe.Length)
+                    {
+                        // termKey = end of current Key word
+                        string termKey = kvp.Key.Substring(kvp.Key.Length - terminaisons[i].suffixe.Length);
+                        if (termKey == terminaisons[i].suffixe)
+                        {
+                            res.Remove(kvp.Key);
+                            // declaration of the string that'll contain the radical
+                            string radical = "";
+                            if (terminaisons[i].remplacement == "epsilon"){
+                                radical += kvp.Key.Substring(0, kvp.Key.Length - terminaisons[i].suffixe.Length);
+                            }
+                            else{
+                                radical += kvp.Key.Substring(0, kvp.Key.Length - terminaisons[i].suffixe.Length);
+                                radical += terminaisons[i].remplacement;
+                            }
+                            wordModified = true;
+                        }
+                    }
+                }
             }
+            return res;
+        }
+        public static bool isValidRadical(string radical, int rule){
+            List<string> VCs = new List<string>();
+            bool res = true;
+            bool voyellePres = false;
+            string suiteVC = "";
+            for(int i=0; i<radical.Length; i++){
+                if(estVoyelle(radical[i])){
+                    VCs.Add(suiteVC);
+                    suiteVC = radical[i] + "";
+                    voyellePres = true;
+                }
+                else{
+                    suiteVC += radical[i];
+                }
             }
+            if(voyellePres){
+                VCs.Add(suiteVC);    
+            }
+            else{
+                res = false;
+            }
+            if(VCs.Count < rule) res = false;
             return res;
         }
         public static Dictionary<string, int> Copy(Dictionary<string, int> init){
@@ -230,7 +250,47 @@ namespace main
         }
         public static string Normalise(string Xmot)
         {
-            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "");
+            string temp = Xmot;
+            string res = "";
+            foreach (char c in temp)
+            {
+                if(c == '\'') res = "";
+                else if (Majuscule(c)) res += c;
+                else if (Minuscule(c)) res += c;
+                else res += "";
+            }
+            return res.ToLower();
+        }
+        public static bool Majuscule(char c)
+        {
+            bool res = false;
+            if ((int)c >= (int)'A' && (int)c <= (int)'Z') res = true;
+            return res;
+        }
+        public static bool Minuscule(char c)
+        {
+            bool res = false;
+            if ((int)c >= (int)'a' && (int)c <= (int)'z') res = true;
+            return res;
+        }
+        public static bool estVoyelle(char c){
+            List<char> voyelles = new List<char>(){'a','e','i','o','u','y'};
+            bool test = false;
+            for(int i=0; i<voyelles.Count && test==false; i++){
+                if(voyelles[i]==c){
+                    test = true;
+                }
+            }
+            return test;
+        }
+        public static List<Mot> Copy(List<Mot> init1)
+        {
+            List<Mot> res = new List<Mot>();
+            foreach (Mot kvp in init1)
+            {
+                res.Add(new Mot(kvp.raw, kvp.clean, kvp.nbOcc));
+            }
+            return res;
         }
     }
 }

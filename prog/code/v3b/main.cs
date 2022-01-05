@@ -267,16 +267,37 @@ namespace main
         }
         public static string Normalise(string Xmot)
         {
-            return Xmot.Replace(",", "").Replace(";", "").Replace(" ", "").Replace(".", "").Replace("=", "").Replace("-", "").Replace("\'", "").Replace("_", "").Replace("ç","").ToLower();
+            string temp = Xmot;
+            string res = "";
+            foreach (char c in temp)
+            {
+                if(c == '\'') res = "";
+                else if (Majuscule(c)) res += c;
+                else if (Minuscule(c)) res += c;
+                else res += "";
+            }
+            return res.ToLower();
         }
-         public static Dictionary<string, int> Copy(Dictionary<string, int> init1)
-    {
-        Dictionary<string, int> res = new Dictionary<string, int>();
-        foreach (KeyValuePair<string, int> kvp in init1)
+        public static bool Majuscule(char c)
         {
-            res.Add(kvp.Key, kvp.Value);
+            bool res = false;
+            if ((int)c >= (int)'A' && (int)c <= (int)'Z') res = true;
+            return res;
         }
-        return res;
-    }
+        public static bool Minuscule(char c)
+        {
+            bool res = false;
+            if ((int)c >= (int)'a' && (int)c <= (int)'z') res = true;
+            return res;
+        }
+        public static Dictionary<string, int> Copy(Dictionary<string,int> init1)
+        {
+            Dictionary<string, int> res = new Dictionary<string, int>();
+            foreach (KeyValuePair<string,int> kvp in init1)
+            {
+                res.Add(kvp.Key, kvp.Value);
+            }
+            return res;
+        }
     }
 }
