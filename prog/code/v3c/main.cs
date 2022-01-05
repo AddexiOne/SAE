@@ -457,11 +457,10 @@ namespace main
             }
             return res;
         }
-
-        /*
-            This method take the created list of <President> and foreach of it's discours, create its HTML result File with the skeleton
-        */
         public static void GenerateHTMLFiles(List<President> init){
+/*
+    This method take the created list of <President> and foreach of it's discours, create its HTML result File with the skeleton
+*/
             // I have to browse the List of <President> and browse their List of <Discour>
             foreach(President presidents in init){
                 foreach(Discour discours in presidents.listSpeeches){
@@ -470,14 +469,13 @@ namespace main
                 }
             }
         }
-
-        /*
-            This method read a skeleton HTML file that has been created and filled manually.
-            While reading the skeleton file, we check if the current line contains the triggering classes, 
-            If yes, we then browse all <President> and their <Discour> to add the read lines, and then we add generated html, wheter its the links or the word Cloud
-            At the end, we then complete the HTML file by adding the rest of the skeleton lines.
-        */
         public static void FillHtmlFile(List<President> init){
+/*
+    This method read a skeleton HTML file that has been created and filled manually.
+    While reading the skeleton file, we check if the current line contains the triggering classes, 
+    If yes, we then browse all <President> and their <Discour> to add the read lines, and then we add generated html, wheter its the links or the word Cloud
+    At the end, we then complete the HTML file by adding the rest of the skeleton lines.
+*/
             const string PATHSKELETON = "../../../web/html/results/skeleton.html";
             StreamReader sr = new StreamReader(PATHSKELETON);
             // We read the skeleton file waiting for the triggering classes
