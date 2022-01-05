@@ -1,115 +1,113 @@
-.word-cloud > :nth-child(1){
-
-	transform: rotate(45deg);
-	width:29%;
-	flex: 1 1 0;
-	color: rgb(102,45,102);
-}
-.word-cloud > :nth-child(9){
-
-	transform: rotateZ(90deg);
-	width:25%;
-	flex: 1 1 0;
-	color: rgb(102,140,102);
-}
-.word-cloud > :nth-child(3){
-
-	transform: rotate(45deg);
-	width:29%;
-	flex: 1 1 0;
-	color: rgb(102,195,102);
-}
-.word-cloud > :nth-child(5){
+.word-cloud > :nth-child(7){
 
 	transform: rotate(45deg);
 	width:31%;
 	flex: 1 1 0;
-	color: rgb(102,24,102);
+	color: rgb(102,252,102);
 }
-.word-cloud > :nth-child(17){
+.word-cloud > :nth-child(3){
 
 	transform: rotateZ(90deg);
-	width:18%;
+	width:31%;
 	flex: 1 1 0;
-	color: rgb(102,21,102);
-}
-.word-cloud > :nth-child(10){
-
-	transform: rotate(45deg);
-	width:19%;
-	flex: 1 1 0;
-	color: rgb(102,111,102);
-}
-.word-cloud > :nth-child(7){
-
-	width:30%;
-	flex: 1 1 0;
-	color: rgb(102,211,102);
-}
-.word-cloud > :nth-child(2){
-
-	transform: rotateZ(90deg);
-	width:22%;
-	flex: 1 1 0;
-	color: rgb(102,75,102);
-}
-.word-cloud > :nth-child(8){
-
-	width:26%;
-	flex: 1 1 0;
-	color: rgb(102,141,102);
+	color: rgb(102,100,102);
 }
 .word-cloud > :nth-child(4){
 
-	transform: rotateZ(90deg);
-	width:32%;
-	flex: 1 1 0;
-	color: rgb(102,221,102);
-}
-.word-cloud > :nth-child(16){
-
-	transform: rotateZ(90deg);
-	width:30%;
-	flex: 1 1 0;
-	color: rgb(102,105,102);
-}
-.word-cloud > :nth-child(15){
-
-	transform: rotateZ(90deg);
-	width:22%;
-	flex: 1 1 0;
-	color: rgb(102,101,102);
-}
-.word-cloud > :nth-child(14){
-
 	width:17%;
 	flex: 1 1 0;
-	color: rgb(102,190,102);
-}
-.word-cloud > :nth-child(13){
-
-	transform: rotateZ(90deg);
-	width:18%;
-	flex: 1 1 0;
-	color: rgb(102,41,102);
-}
-.word-cloud > :nth-child(12){
-
-	transform: rotateZ(90deg);
-	width:29%;
-	flex: 1 1 0;
-	color: rgb(102,138,102);
-}
-.word-cloud > :nth-child(11){
-
-	width:22%;
-	flex: 1 1 0;
-	color: rgb(102,80,102);
+	color: rgb(102,120,102);
 }
 .word-cloud > :nth-child(6){
 
 	transform: rotateZ(90deg);
+	width:18%;
+	flex: 1 1 0;
+	color: rgb(102,11,102);
+}
+.word-cloud > :nth-child(10){
+
+	width:25%;
+	flex: 1 1 0;
+	color: rgb(102,105,102);
+}
+.word-cloud > :nth-child(8){
+
+	width:19%;
+	flex: 1 1 0;
+	color: rgb(102,209,102);
+}
+.word-cloud > :nth-child(1){
+
+	transform: rotateZ(90deg);
+	width:28%;
+	flex: 1 1 0;
+	color: rgb(102,210,102);
+}
+.word-cloud > :nth-child(17){
+
+	width:19%;
+	flex: 1 1 0;
+	color: rgb(102,162,102);
+}
+.word-cloud > :nth-child(16){
+
+	transform: rotateZ(90deg);
+	width:28%;
+	flex: 1 1 0;
+	color: rgb(102,133,102);
+}
+.word-cloud > :nth-child(15){
+
+	transform: rotate(45deg);
+	width:26%;
+	flex: 1 1 0;
+	color: rgb(102,95,102);
+}
+.word-cloud > :nth-child(9){
+
+	transform: rotate(45deg);
+	width:27%;
+	flex: 1 1 0;
+	color: rgb(102,180,102);
+}
+.word-cloud > :nth-child(14){
+
+	transform: rotateZ(90deg);
 	width:23%;
 	flex: 1 1 0;
-	color: rgb(102,217,102);
+	color: rgb(102,137,102);
+}
+.word-cloud > :nth-child(2){
+
+	width:27%;
+	flex: 1 1 0;
+	color: rgb(102,185,102);
+}
+.word-cloud > :nth-child(13){
+
+	width:26%;
+	flex: 1 1 0;
+	color: rgb(102,184,102);
+}
+.word-cloud > :nth-child(12){
+
+	transform: rotate(45deg);
+	width:30%;
+	flex: 1 1 0;
+	color: rgb(102,58,102);
+}
+.word-cloud > :nth-child(11){
+
+	transform: rotate(45deg);
+	width:27%;
+	flex: 1 1 0;
+	color: rgb(102,235,102);
+}
+.word-cloud > :nth-child(5){
+
+	transform: rotateZ(90deg);
+	width:30%;
+	flex: 1 1 0;
+	color: rgb(102,206,102);
 }
