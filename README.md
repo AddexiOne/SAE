@@ -5,31 +5,31 @@ Cette SAE fait partie du programme de BUT Informatique, en première année.
 1. Execution du projet :
     Afin de lancer l'execution de la dernière version du projet, il faut :
     - Télécharger l'archive du projet.
-    - Executer le programme ```exec.exe``` avec les commandes suivantes :
-     - Sur linux / Mac, dans la console et à la racine du projet :
-            ```
-            chmod +x exec.exe
-            ./exec.exe
-            ```
-      - Sur Windows :
-       - dans la console et à la racine du projet :
-            > exec.exe
-        - dans le navigateur de fichier, double cliquez sur le fichier
-            > exec.exe
+    - Se rendre dans le dossier de la version que l'on veut utiliser.
+    - Compiler le fichier **main.cs**.
+    - L'executer.
+
+
+        ```
+         mcs main.cs
+         mono main.exe
+        ```
 
 2. Execution et consultation des différentes versions:
     A la racine du projet se trouve 5 fichiers/dossiers:
     
         - 📁 prog
         - 📁 web
-        - ✅ exec.exe
         - 📘 REAME.md
         - ⬛ .gitignore
 
-    2.1. Dans le dossier **prog** se trouve deux dossiers:
+    2.1. Dans le dossier **prog** se trouve deux dossiers et un fichier:
     
         - 📁 code
         - 📁 static
+        - ✅ Algorigramme_v3c.jpeg
+
+    Le fichier **Algorigramme_v3c.jpeg** contient l'algorigramme de la version v3c
     
     Le dossier **static** se trouve les fichiers utiles et importants aux projet, ce sont les fichiers analysés par l'algorithme.
     
