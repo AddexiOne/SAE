@@ -174,8 +174,6 @@ namespace main
             System.Console.WriteLine("Traitement des textes");
             List<President> listPresidents = Start();
             System.Console.WriteLine("Génération des fichiers HTML");
-            // GenerateHTMLFiles(listPresidents);
-            System.Console.WriteLine("Modification des fichiers html");
             BuildFillHtmlFile(listPresidents);
             System.Console.WriteLine("modification du fichier CSS");
             Modify_CSS();
