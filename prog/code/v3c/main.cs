@@ -15,30 +15,47 @@ namespace main
         static Random rnd = new Random();
 
         public struct Discour
-        {
+        { 
             public string pathSpeech { get; }
+            // Path from the main.cs to the actual location of the raw discour (.txt)
             public string pathDictionnaryRaw { get; }
+            // Path from the main.cs to the location of the raw version of the <Discour>
             public string pathDictionnaryClean { get; }
+            // Path from the main.cs to the location of the cleaned version of the <Discour>
             public string pathHtmlFile {get; set;}
+            // Path from the main.cs to the location of the HTML's result file
             public string pathHtmlFileR {get; set;}
+            // Path from the index.html to the result/result's file
             public List<Mot> listMot { get; set; }
+            // The collections that contains the List<Mot> that we at the end use to write the HTML
             public int annee { get; }
+            // year of the <Discour>
             public string HtmlContent {get; set;}
+            // string storing the HTML content of the <Discour>
             public Discour(string president, int annee) :this()
             {
+                /*
+                    Constructor that instanciate and asign the <Discour>
+                    Uses all kind of functions to create the final result and asign each variable of <Discour>
+                    The presence of this constructor really makes the whole project very straightforward,
+                    ie : generating the files, the results automatically, while we create a <Discour> makes a very small main and reserve the memory at the very start of the project
+                */
                 this.annee = annee;
                 this.pathSpeech = PATHDISCOURS + president + "/" + annee + EXTENSIONTXT;
                 this.pathDictionnaryRaw = relativePathResultByPresidentULT + president + "/" + "RAW" + "/" + annee + EXTENSIONCSV;
                 this.pathDictionnaryClean = relativePathResultByPresidentULT + president + "/" + "CLEAN" + "/" + annee + EXTENSIONCSV;
                 this.listMot = GenerateList(this.pathSpeech);
-                GenerateFileR(racines(supprimeVide(this.listMot)), this.pathDictionnaryRaw);
-                GenerateFileC(racines(supprimeVide(this.listMot)), this.pathDictionnaryClean);
+                generateFileRaw(racines(supprimeVide(this.listMot)), this.pathDictionnaryRaw);
+                generatefileClean(racines(supprimeVide(this.listMot)), this.pathDictionnaryClean);
                 this.HtmlContent = "";
                 this.pathHtmlFile = "../../../web/html/results/v3c/";
                 this.pathHtmlFileR = "../";
             }
             public static List<Mot> GenerateList(string path)
             {
+                /*
+                    This function creates a simple List of <Mot> with the content of the <Discour>'s .txt file
+                */
                 StreamReader sr = new StreamReader(path);
                 List<Mot> liste = new List<Mot>();
                 string ligne;
@@ -65,13 +82,15 @@ namespace main
                 }
                 return liste;
             }
-            public static void GenerateFileR(List<Mot> XListDiscours, string path)
+            public static void generateFileRaw(List<Mot> XListDiscours, string path)
             {
-                // Création de l'objet StreamWriter pour écrire dans les fichiers:
+                /*
+                    This method creates a file in the argument #2 (path) file, the result contains Raw words (non-modified/formated)
+                */
                 string toBeWritten = "";
                 foreach (Mot kvp in XListDiscours)
                 {
-                    // Ecriture de la clef suivie de sa valeur séparé par une virgule
+                    // Write the normalized word, followed by a ',' then its number of occurences, making the result file a .csv file
                     if (kvp.clean != "")
                     {
                         toBeWritten += $"{NormaliseRaw(kvp.raw.ToLower())},{kvp.nbOcc}\n";
@@ -79,13 +98,14 @@ namespace main
                 }
                 File.WriteAllText(path, toBeWritten);
             }
-            public static void GenerateFileC(List<Mot> XListDiscours, string path)
+            public static void generatefileClean(List<Mot> XListDiscours, string path)
             {
-                // Création de l'objet StreamWriter pour écrire dans les fichiers:
+                /*
+                    This method creates a file in the argument #2 (path) file, the result contains clean words (modified/formated)
+                */
                 string toBeWritten = "";
                 foreach (Mot kvp in XListDiscours)
                 {
-                    // Ecriture de la clef suivie de sa valeur séparé par une virgule
                     if (kvp.clean != "")
                     {
                         toBeWritten += $"{Normalise(kvp.clean)},{kvp.nbOcc}\n";
@@ -111,10 +131,16 @@ namespace main
         public struct Terminaison
         {
             public string suffixe { get; set; }
+            // suffixe is the string that we'll compare to other words
             public string remplacement { get; set; }
+            // string that'll tells us what to do when we have to modify a <Mot>
             public int regle { get; set; }
+            // number of occurences of a List<string> VCs, to tell if a <Mot> that have been cleaned is valid
             public Terminaison(int regle, string suff, string rempl)
             {
+                /*
+                    Constructor that instanciate and asign values to <terminaison>'s variables
+                */
                 this.regle = regle;
                 this.suffixe = suff;
                 this.remplacement = rempl;
@@ -123,10 +149,16 @@ namespace main
         public struct Mot
         {
             public string clean { get; set; }
+            // version of the word that'll be modified, cleaned.
             public string raw { get; set; }
+            // raw version of the word, no formating or so ever
             public int nbOcc { get; set; }
+            // number of appearences of a said <Mot>
             public Mot(string raw, string clean, int nbOcc)
             {
+                /*
+                    Constructor that instanciate and asign values to the <Mot>'s variables
+                */
                 this.clean = clean;
                 this.raw = NormaliseRaw(raw);
                 this.nbOcc = nbOcc;
@@ -135,15 +167,14 @@ namespace main
         public static List<President> Start()
         {
             /*
-                Liste de presidents : Pour chaque president connu dans listPresidents,
-                je créé un president, et je lui ajoute tout ses discours
+                Foreach presidents in the listPresidents, I create a new <President> that will contain each of it's informations, discours and so on.
             */
             List<President> presidents = new List<President>();
             List<string> listPresidents = new List<string>() { "GISCARDDESTAING", "MITTERAND", "CHIRAC", "SARKOZY", "HOLLANDE", "MACRON" };
 
-            // Création d'une variable comptant les années
+            // Integer that'll count the years
             int annee = 1974;
-            //Parcours de la liste des présidents afin de chercher les textes présents dans le répertoire static
+            // Browse the List to find the .txt file, located in the static repertory
             foreach (string s in listPresidents)
             {
                 var president = new President(s);
@@ -160,6 +191,7 @@ namespace main
                             Directory.CreateDirectory(relativePathResultByPresidentULT + s + "/RAW");
                             Directory.CreateDirectory(relativePathResultByPresidentULT + s + "/CLEAN");
                         }
+                        // Creation of a new Discours with the constructor (izi life :))
                         Discour d = new Discour(s, annee);
                         president.listSpeeches.Add(d);
                     }
@@ -167,28 +199,42 @@ namespace main
                 }
                 presidents.Add(president);
             }
+            // return the collection of <President> which contains its respective collection of <Discour>
             return presidents;
         }
         static void Main(string[] args)
         {
+            /*
+                Main Uses Start() BuildHtmlFiles and Modify_CSS() to first create the collection, then use the collection to create a readable file in html
+                And the the result in HTML is formated graphically
+            */
             System.Console.WriteLine("Traitement des textes");
             List<President> listPresidents = Start();
             System.Console.WriteLine("Génération des fichiers HTML");
             BuildFillHtmlFile(listPresidents);
             System.Console.WriteLine("modification du fichier CSS");
             Modify_CSS();
+            Console.Clear();
+            System.Console.WriteLine("DONE");
         }
         public static List<Mot> racines(List<Mot> init)
         {
+            /*
+                Racines is the fonction that start the processing of each <Mot> by Going 3 times into the racinesCalled() so that we dont have any unecessary character in every word
+                With that we'll be able to really compare each radical and telle its true number of occurences
+            */
             List<Mot> res = Copy(init);
             for (int i = 1; i <= 3; i++)
             {
-                res = racinesPath(res, i);
+                res = racinesCalled(res, i);
             }
             return res;
         }
         public static List<Terminaison> generateListTerminaison(string path)
         {
+            /*
+                This fonction read a whole file given in argument and add every information of the file to a List of Terminaison
+            */
             List<Terminaison> result = new List<Terminaison>();
             if (File.Exists(path))
             {
@@ -205,8 +251,14 @@ namespace main
             }
             return result;
         }
-        public static List<Mot> racinesPath(List<Mot> init, int nu)
+        public static List<Mot> racinesCalled(List<Mot> init, int nu)
         {
+            /*
+                With a specified number that'll define which file we are looking at, we browse evry Mot in the collection in argument #1.
+                With the collection of terminaisons generated by generateListTerminaison, we can now look at every <Mot> and compare its terminaison to the file's <Terminaison>
+                If the terminaison mathces, we modify the word with the terminaiuson's replacement and then check if the said radical is valid with "isValidRadical"
+                We then return a Sorted Collection that doesn't contains any duplicates with "Finalise" 
+            */
             string path = "../../static/hintsfiles/step" + nu + ".txt";
             List<Mot> res = new List<Mot>();
             res = Copy(init);
@@ -284,6 +336,9 @@ namespace main
         }
         public static List<Mot> Finalise(List<Mot> init)
         {
+            /*
+                Finalise is a fonction that takes care of any duplicates in the collection List<mot> in argument and returns a collection without duplicate
+            */
             // We declare the result Dictionary at this state so we can keep an eye on what we are working on
             Dictionary<string, Mot> tempD = new Dictionary<string, Mot>();
             List<Mot> result = new List<Mot>();
@@ -311,11 +366,14 @@ namespace main
         }
         public static List<Mot> Sort(List<Mot> init)
         {
+            /*
+                From a List of <Mot> not sorted, we, with the tri a insertion's way, sort the list in argument to finaly return a sorted List<Mot>
+            */
             List<Mot> alea_tri = new List<Mot>();
             List<Mot> alea = new List<Mot>();
             int i;
 
-            alea = Clone(init);
+            alea = Copy(init);
             alea_tri.Add(alea[0]);
             alea.RemoveAt(0);
 
@@ -337,17 +395,12 @@ namespace main
             }
             return res;
         }
-        public static List<Mot> Clone(List<Mot> init)
-        {
-            List<Mot> res = new List<Mot>();
-            foreach (Mot m in init)
-            {
-                res.Add(m);
-            }
-            return res;
-        }
         public static bool isValidRadical(string radical, int rule)
         {
+            /*
+                By looking at the pure radical of the word in argument and its rule, we can tell if a radical is considered valid or not.
+                First we split the word in seperates strings named VC (VoyelleConsonne), if the word contains more than <rule> VCs, the radical is valid.
+            */
             List<string> VCs = new List<string>();
             bool res = true;
             bool voyellePres = false;
@@ -378,6 +431,11 @@ namespace main
         }
         public static List<Mot> supprimeVide(List<Mot> init)
         {
+            /*
+                The fonction takes a list of <Mot> and check if each <Mot> is considered as an empty_word, 
+                if it is, we remove it from the collection.
+                We then return the collection without empty_words
+            */
             string path = "../../static/hintsfiles/mot_vide.txt";
             List<string> listWords = new List<string>();
             List<Mot> res = Copy(init);
@@ -406,6 +464,9 @@ namespace main
         }
         public static bool estVoyelle(char c)
         {
+            /*
+                Test if the argument is a voyelle
+            */
             List<char> voyelles = new List<char>() { 'a', 'e', 'i', 'o', 'u', 'y' };
             bool test = false;
             for (int i = 0; i < voyelles.Count && test == false; i++)
@@ -419,6 +480,9 @@ namespace main
         }
         public static string Normalise(string Xmot)
         {
+            /*
+                Clean the argument so that we have only letters of the alphabet in the result's string
+            */
             string temp = Xmot;
             string res = "";
             foreach (char c in temp)
@@ -431,6 +495,9 @@ namespace main
             return res.ToLower();
         }
         public static string NormaliseRaw(string Xmot){
+            /*
+                Clean the argument so that we have a claen word without any disturbent character
+            */
             string res = "";
             foreach(char c in Xmot){
                 if(c == '.' || c == ',' || c == '-' || c == '_') res += "";
@@ -442,18 +509,21 @@ namespace main
         }
         public static bool Majuscule(char c)
         {
+            // Test if the argument is a Majuscule
             bool res = false;
             if ((int)c >= (int)'A' && (int)c <= (int)'Z') res = true;
             return res;
         }
         public static bool Minuscule(char c)
         {
+            // Test if the argument (char) is a minuscule
             bool res = false;
             if ((int)c >= (int)'a' && (int)c <= (int)'z') res = true;
             return res;
         }
         public static List<Mot> Copy(List<Mot> init1)
         {
+            // foreach element of the argument's list, we add it into antother list.
             List<Mot> res = new List<Mot>();
             foreach (Mot kvp in init1)
             {
