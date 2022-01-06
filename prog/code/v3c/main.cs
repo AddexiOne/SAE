@@ -642,7 +642,6 @@ namespace main
             const string HEADER = ".word-cloud > :nth-child(";
             const string ENDHEADER = "){\n";
             const string FOOTER = "\n}\n";
-            Random rnd = new Random();
             string res = "";
             List<int> listeRemaining = new List<int>();
             List<string> listRota = new List<string>(){"\n\ttransform: rotate(45deg);", "\n\ttransform: rotateZ(90deg);", ""};
