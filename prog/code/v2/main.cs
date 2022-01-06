@@ -73,7 +73,7 @@ namespace main
             public string namePresident;
             public List<Discour> listSpeeches;
 
-            public President(string nom)
+            public President(string nom) :this()
             {
                 this.namePresident = nom;
                 this.listSpeeches = new List<Discour>();
