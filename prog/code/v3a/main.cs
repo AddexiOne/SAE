@@ -13,6 +13,24 @@ namespace main
         public const string PATHRESULT = "./results/";
 
         public const string EXTENSIONCSV = ".csv";
+         public struct Mot
+        {
+            public string clean { get; set; }
+            // version of the word that'll be modified, cleaned.
+            public string raw { get; set; }
+            // raw version of the word, no formating or so ever
+            public int nbOcc { get; set; }
+            // number of appearences of a said <Mot>
+            public Mot(string raw, string clean, int nbOcc)
+            {
+                /*
+                    Constructor that instanciate and asign values to the <Mot>'s variables
+                */
+                this.clean = clean;
+                this.raw = Normalise(raw);
+                this.nbOcc = nbOcc;
+            }
+        }
         public struct Discour
         {
             public string pathSpeech { get; }
