@@ -343,7 +343,7 @@ namespace main
                     }
                 }
             }
-            return Sort(Finalise(res));
+            return Sort(res);
         }
         public static List<Mot> Finalise(List<Mot> init)
         {
