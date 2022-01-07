@@ -688,7 +688,7 @@ namespace main
                 res += listRota[rnd.Next(0,3)];
                 res += "\n\twidth:" + rnd.Next(17, 33) + "%;";
                 res += "\n\tflex: 1 1 0;";
-                res += "\n\tfont-size:" + (200-(i*2)) + "%;";
+                res += "\n\tfont-size:" + (300-(i*3.5)) + "%;";
                 res += "\n\tcolor: rgb(102," + rnd.Next(0,256) + ",102);" + FOOTER;
             }
             File.WriteAllText(PATHCSSFILE, res);
