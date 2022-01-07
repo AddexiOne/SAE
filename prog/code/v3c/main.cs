@@ -1,7 +1,18 @@
+/************************************************************************************************
+* File created by Alexandre OFFERLE. Last update : Friday 7 january 15:12                       *
+* This file is the last version and should be working by only executing the main.exe file.      *
+* The whole project is available in git (https://github.com/AddexiOne/SAE)                      *                    
+*************************************************************************************************/
+
 using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+
+/*
+    PS : le problème du nuage de mots contenant des mot_vides a été trouvé, il manquait un appel de fonction :)
+    Le nuage de mots générés est donc sensé être le bon.
+*/
 
 namespace main
 {
