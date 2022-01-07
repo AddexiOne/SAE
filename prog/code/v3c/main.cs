@@ -7,7 +7,7 @@ namespace main
 {
     public class project
     {
-        const string PATHRES = "../../../web/html/results/";
+        public const string PATHRES = "../../../web/html/results/";
         public const string PATHDISCOURS = "./../../static/";
         public const string EXTENSIONTXT = ".txt";
         public const string relativePathResultByPresidentULT = "./results/";
@@ -80,7 +80,7 @@ namespace main
                         }
                     }
                 }
-                return liste;
+                return supprimeVide(liste);
             }
             public static void generateFileRaw(List<Mot> XListDiscours, string path)
             {
